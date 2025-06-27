@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,12 +21,19 @@ import AutoMobile.Cars.Excrptionfold.CustomException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Autowired
+ 
     JwtFilter jwtFilter;
+    PrincpleUser princpleUser;
+
+    // @Autowired
+    public SecurityConfig(JwtFilter jwtFilter,PrincpleUser princpleUser){
+        this.jwtFilter=jwtFilter;
+        this.princpleUser=princpleUser;
+    }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
+        System.out.println("SecurityConfig.securityFilterChain()");
         security
                 // This used to we don't need login and logout 
                 .csrf(c -> c.disable())
@@ -39,28 +45,30 @@ public class SecurityConfig {
                         // "/swagger-resources/**",
                         "/swagger-ui.html",
                         // "/webjars/**",
-                        "/car"
+                        "/car",
+                        "/car/add",
+                        "/login"
                         ).permitAll()
                         // It is used to enable authentication and we acces the api using login or token
                         .anyRequest().authenticated())
                 // It enable "OpenSource" login like google and github account
-                .oauth2Login(Customizer.withDefaults())
+                // .oauth2Login(Customizer.withDefaults())
                 .sessionManagement(temp->temp.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // It is enable the basic login like alert message tap
                 .httpBasic(Customizer.withDefaults())
                 // It is enable the login form
-                .formLogin(Customizer.withDefaults())
+                // .formLogin(Customizer.withDefaults())
                 // It is used add our filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return security.build();
     }
 
-    @Autowired
-    PrincpleUser princpleUser;
+    
 
     @Bean
     public AuthenticationProvider authProvider() throws CustomException {
         try {
+            System.out.println("SecurityConfig.authProvider()");
             //  It DaoAuthenticationProvider to use our custom princpleUser (UserDetailsService)
             DaoAuthenticationProvider provider = new DaoAuthenticationProvider(princpleUser);
             // You’re telling the provider to use BCrypt with strength 8 to check passwords.
@@ -75,6 +83,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws CustomException {
+                System.out.println("SecurityConfig.authenticationManager()");
         try {
             return authenticationConfiguration.getAuthenticationManager();
         } catch (Exception e) {

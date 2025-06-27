@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Auth;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import AutoMobile.Cars.Repository.UserRepo;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping()
 public class UserController {
 
     UserService service;
@@ -24,16 +23,9 @@ public class UserController {
     public UserController(UserService service){
         this.service=service;
     }
-
-    @GetMapping()
-    public List<?> alive(){
-        // System.out.println(carRepo.findAll());
-        return userRepo.findAll();
-    }
     
     @GetMapping("/login")
     public String login(@RequestParam String userName, @RequestParam String password){
-        // System.out.println(userName+password);
         return service.login(userName,password);
     }
 

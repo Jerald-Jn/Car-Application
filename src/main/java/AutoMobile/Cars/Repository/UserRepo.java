@@ -8,5 +8,4 @@ import AutoMobile.Cars.Model.User;
 
 @Repository
 public interface UserRepo extends MongoRepository<User,String> {
-    // User findByUserName(String userName);
 }

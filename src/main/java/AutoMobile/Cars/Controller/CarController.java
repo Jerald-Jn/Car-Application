@@ -1,12 +1,6 @@
 package AutoMobile.Cars.Controller;
 
-// import java.io.BufferedReader;
-// import java.io.InputStream;
-// import java.io.InputStreamReader;
-// import java.util.List;
 import java.util.UUID;
-// import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
-// import AutoMobile.Cars.Model.Car;
 import AutoMobile.Cars.Model.User;
 import AutoMobile.Cars.Service.CarService;
 
@@ -44,7 +37,6 @@ public class CarController {
 	@GetMapping()
 	public ResponseEntity<?> get() throws Exception {
 		try {
-			// System.out.println(carService.getAll());
 			return new ResponseEntity<>(carService.getAll(), HttpStatus.OK);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -58,7 +50,6 @@ public class CarController {
 		try {
 			log.info("user : {}",user);
 			UUID uuid = UUID.randomUUID();
-			// System.out.println(car.getUser().getUserInfo());
 			return new ResponseEntity<>(carService.addUser(user, uuid), HttpStatus.ACCEPTED);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -70,12 +61,6 @@ public class CarController {
 	@GetMapping("/get")
 	public ResponseEntity<?> getByID(@RequestParam(required = true) String userName) throws Exception {
 		try {
-			// System.out.println(userName);
-			// InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
-			// if (is != null) {
-			// 	BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			// 	System.out.println(reader.lines().collect(Collectors.joining()));
-			// }
 			log.info("find userName : {}",userName);
 			return new ResponseEntity<>(carService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {
