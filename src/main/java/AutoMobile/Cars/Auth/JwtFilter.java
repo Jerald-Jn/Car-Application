@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import AutoMobile.Cars.Security.JwtBlacklist;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,20 +24,34 @@ public class JwtFilter extends OncePerRequestFilter {
     JwtService jwtService;
     @Autowired
     ApplicationContext applicationContext;
+    @Autowired
+    JwtBlacklist jwtBlacklist;
 
-    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // Getheader "Authorization" value from the request
         String token = request.getHeader("Authorization");
         String userName = null;
-
+        
+        if(token!=null && token.startsWith("Basic ")){
+            if(jwtBlacklist.isTokenBlacked(token.substring(6))){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+        }
+        filterChain.doFilter(request, response);
+        return;
+        }else
         if (token != null && token.startsWith("Bearer ")) {
             // We got only token without "Bearer "
             token = token.substring(7);
             // Pass token to the "JwtService"
             userName = jwtService.getUsernameByToken(token);
+
+            if (jwtBlacklist.isTokenBlacked(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+            }
 
             /*
              * Check username not null
@@ -69,10 +84,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
         }
+
         // It passes the request and response to the next filter in the Spring Security
         // filter chain.
         // Without it, the request stops there and never reaches the controller.
         filterChain.doFilter(request, response);
     }
-
 }

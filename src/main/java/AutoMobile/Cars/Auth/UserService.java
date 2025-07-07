@@ -33,7 +33,7 @@ public class UserService {
             // This check the authentication is autheticated
             if (authentication.isAuthenticated()) {
                 String token=jwtService.generateToken(userName);
-                return "Login successful!->"+token;
+                return token;
             } else {
                 return "Invalid credentials";
             }
