@@ -1,17 +1,13 @@
 package AutoMobile.Cars.Controller;
 
-// import java.io.BufferedReader;
-// import java.io.InputStream;
-// import java.io.InputStreamReader;
-// import java.util.List;
 import java.util.UUID;
-// import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
-// import AutoMobile.Cars.Model.Car;
 import AutoMobile.Cars.Model.User;
+import AutoMobile.Cars.Security.JwtBlacklist;
 import AutoMobile.Cars.Service.CarService;
+// import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/car")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CarController {
 
 	Logger log=LoggerFactory.getLogger(CarController.class);
@@ -36,6 +34,8 @@ public class CarController {
 	String fileName;
 
 	CarService carService;
+	@Autowired
+    JwtBlacklist jwtBlacklist;
 
 	public CarController(CarService carService) {
 		this.carService = carService;
@@ -44,7 +44,6 @@ public class CarController {
 	@GetMapping()
 	public ResponseEntity<?> get() throws Exception {
 		try {
-			// System.out.println(carService.getAll());
 			return new ResponseEntity<>(carService.getAll(), HttpStatus.OK);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -58,7 +57,6 @@ public class CarController {
 		try {
 			log.info("user : {}",user);
 			UUID uuid = UUID.randomUUID();
-			// System.out.println(car.getUser().getUserInfo());
 			return new ResponseEntity<>(carService.addUser(user, uuid), HttpStatus.ACCEPTED);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -70,12 +68,6 @@ public class CarController {
 	@GetMapping("/get")
 	public ResponseEntity<?> getByID(@RequestParam(required = true) String userName) throws Exception {
 		try {
-			// System.out.println(userName);
-			// InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
-			// if (is != null) {
-			// 	BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			// 	System.out.println(reader.lines().collect(Collectors.joining()));
-			// }
 			log.info("find userName : {}",userName);
 			return new ResponseEntity<>(carService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {
@@ -98,4 +90,33 @@ public class CarController {
 
 	}
 
+
+	public ResponseEntity<?> add(){
+		return new ResponseEntity<>("hello",HttpStatus.ACCEPTED);
+	}
+
+	// @GetMapping("/logout")
+    // public ResponseEntity<?> logout(HttpServletRequest request) {
+    //     System.out.println("UserController.logout()");
+    //     try {
+    //         final String token = request.getHeader("Authorization");
+    //         boolean chceklogout = false;
+    //     if (token != null) {
+    //         if(token.startsWith("Bearer ")){
+    //             String tempToken = token.substring(7);
+    //             chceklogout=jwtBlacklist.blackToken(tempToken);
+    //         }else if (token.startsWith("Basic ")) {
+    //             String tempToken=token.substring(6);
+    //             System.out.println(tempToken);
+    //             chceklogout=jwtBlacklist.blackToken(tempToken);
+    //         }
+    //     }
+    //     if(chceklogout){
+    //             return new ResponseEntity<>("Logout successfully",HttpStatus.ACCEPTED);
+    //         }
+    //     return new ResponseEntity<>("Pls logout correctly", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         throw new CustomRuntimeException(e);
+    //     }
+    // }
 }

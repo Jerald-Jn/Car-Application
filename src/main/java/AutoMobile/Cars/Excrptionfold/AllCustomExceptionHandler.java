@@ -22,7 +22,6 @@ public class AllCustomExceptionHandler {
     public ResponseEntity<?> CustomExceptionHandler(Exception e, WebRequest request) {
         errorList.add(e.getMessage());
         log.info("CustomException -> :{} ", e.getMessage());
-        // System.out.println("CustomException -> " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
     }
 
@@ -30,7 +29,6 @@ public class AllCustomExceptionHandler {
     public ResponseEntity<?> CustomRumtimeExceptionHandler(Exception e, WebRequest request) {
         errorList.add(e.getMessage());
         log.info("CustomRuntimeException -> :{} ", e.getMessage());
-        // System.err.println("CustomRuntimeException -> " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
     }
 }

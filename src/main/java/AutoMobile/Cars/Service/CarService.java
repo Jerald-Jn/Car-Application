@@ -47,7 +47,6 @@ public class CarService {
         car.setInsurance(insurance);
         user.setUserId(uuid);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        // System.err.println(car);
         return user;
     }
 
@@ -56,7 +55,6 @@ public class CarService {
     }
 
     public User getByID(String userName) {
-        // System.out.println(userName);
         return userRepo.findById(userName).get();
     }
 

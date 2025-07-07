@@ -113,7 +113,6 @@ public class JwtService {
                             .replace("-----BEGIN PUBLIC KEY-----", "").replaceAll("-----END PUBLIC KEY-----", ""));
                 }
                 bufferedReader.close();
-                // System.out.println(builder);
             }
             return builder.toString();
         } catch (IOException e) {

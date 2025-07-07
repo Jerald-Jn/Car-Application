@@ -1,91 +1,65 @@
 package AutoMobile.Cars.Auth;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Repository.UserRepo;
+import AutoMobile.Cars.Security.JwtBlacklist;
 
 @RestController
-@RequestMapping("/user")
+@CrossOrigin()
 public class UserController {
 
     UserService service;
 
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    JwtBlacklist jwtBlacklist;
+   
 
     public UserController(UserService service){
         this.service=service;
     }
-
-    @GetMapping()
-    public List<?> alive(){
-        // System.out.println(carRepo.findAll());
-        return userRepo.findAll();
-    }
     
-    @GetMapping("/login")
-    public String login(@RequestParam String userName, @RequestParam String password){
-        // System.out.println(userName+password);
-        return service.login(userName,password);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String userName, @RequestParam String password){
+        try {
+            return new ResponseEntity<>(service.login(userName, password), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            throw new CustomRuntimeException(e);
+        }
+        
     }
 
-    @GetMapping("/")
-    public Temp get(@RequestBody Temp temp){
-        return temp;
-    }
-
-    @GetMapping("/{firstName}")
-    public String g(@PathVariable String firstName){
-        return "hello "+firstName;
-    }
-}
-
-class Temp {
-    private String firstName;
-    private String lastName;
-    private String email;
-    String guid;
-
-    // Constructors
-    public Temp() {}
-    public Temp(String firstName, String lastName, String email,String guid) {
-        this.firstName = firstName;
-        this.lastName=lastName;
-        this.email=email;
-        this.guid=guid;
-    }
-
-    // Getter & Setter
-    public String getFirstName() {
-        return firstName;
-    }
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getLastName() {
-        return lastName;
-    }
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    public String getGuid() {
-        return guid;
-    }
+    // @GetMapping("/logout")
+    // public ResponseEntity<?> logout(HttpServletRequest request) {
+    //     try {
+    //         final String token = request.getHeader("Authorization");
+    //         boolean chceklogout = false;
+    //     if (token != null) {
+    //         if(token.startsWith("Bearer ")){
+    //             String tempToken = token.substring(7);
+    //             chceklogout=jwtBlacklist.blackToken(tempToken);
+    //         }else if (token.startsWith("Basic ")) {
+    //             String tempToken=token.substring(6);
+    //             chceklogout=jwtBlacklist.blackToken(tempToken);
+    //         }
+    //     }
+    //     if(chceklogout){
+    //             return new ResponseEntity<>("Logout successfully",HttpStatus.ACCEPTED);
+    //         }
+    //     return new ResponseEntity<>("Pls logout correctly", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         throw new CustomRuntimeException(e);
+    //     }
+    // }
+    
 }
