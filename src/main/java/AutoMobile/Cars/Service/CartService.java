@@ -1,8 +1,10 @@
 package AutoMobile.Cars.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -58,5 +60,11 @@ public class CartService {
         Optional<Cart> exitingCart=cartRepository.findByUser(getCurrentUsername());
         Cart cart=exitingCart.orElseGet(()->new Cart(getCurrentUsername(), new HashMap<>()));
         return DataConverter.convertToCartResponse(cart);
+    }
+
+
+    public List<CartResponse> getAllCart() {
+        List<Cart> cart=cartRepository.findAll();
+        return cart.stream().map(item->DataConverter.convertToCartResponse(item)).collect(Collectors.toList());
     }
 }

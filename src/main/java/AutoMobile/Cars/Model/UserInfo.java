@@ -17,6 +17,7 @@ public class UserInfo {
     private String email;
     private String gender;
     private String State;
+    String city;
     private String pincode;
     @Override
     public String toString() {

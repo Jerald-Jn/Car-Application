@@ -13,4 +13,8 @@ public class CartResponse {
     String id;
     String user;
     Map<String,Integer> items;
+    @Override
+    public String toString() {
+        return "CartResponse [id=" + id + ", user=" + user + ", items=" + items + "]";
+    }
 }

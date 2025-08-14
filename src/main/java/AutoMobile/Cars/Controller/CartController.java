@@ -1,5 +1,7 @@
 package AutoMobile.Cars.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +19,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/cart")
-@CrossOrigin
+@CrossOrigin()
 @AllArgsConstructor
 public class CartController {
 
@@ -50,9 +52,23 @@ public class CartController {
     public ResponseEntity<?> getCart(){
         CartResponse cartResponse=null;
         try {
+            System.out.println("CartController.getCart()");
             cartResponse=cartService.getCart();
+            System.err.println(cartResponse);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
+        }
+        return ResponseEntity.ok().body(cartResponse);
+    }
+
+
+    @GetMapping("all")
+    public ResponseEntity<?> getAllCart(){
+        List<CartResponse> cartResponse=null;
+        try {
+            cartResponse=cartService.getAllCart();
+        } catch (Exception e) {
+            throw new CustomRuntimeException("get cart error");
         }
         return ResponseEntity.ok().body(cartResponse);
     }
