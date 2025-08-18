@@ -27,8 +27,11 @@ public class Payment {
     String lastName;
     String name;
     Map<String,PaymentDetails> paymentDetailsMap;
+    
     @Override
     public String toString() {
-        return "Order [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + " , orderDetails= "+paymentDetailsMap;
+        return "Payment [id=" + id + ", userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", name=" + name + ", paymentDetailsMap=" + paymentDetailsMap + "]";
     }
+   
 }

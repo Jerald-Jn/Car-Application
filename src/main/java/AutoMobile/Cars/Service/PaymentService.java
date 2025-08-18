@@ -42,10 +42,12 @@ public class PaymentService {
         Stripe.apiKey = secretKey;
 
         UUID userId=dataConverter.getCurrentUserId();
+        System.err.println(userId);
         
-        long amount = Math.round(paymentRequest.getAmount() * 1000);
+        long amount = Math.round(paymentRequest.getAmount() * 100);
         System.out.println("PaymentController.createPayment()");
         System.out.println(amount+" "+paymentRequest);
+        System.err.println(paymentRepository.findByUserId(userId));
         if (amount < 200) { // RM 2 minimum for MYR
             throw new IllegalArgumentException("Amount must be at least RM 2.00");
         }
@@ -61,7 +63,7 @@ public class PaymentService {
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
         Payment payment=dataConverter.convertToPayment(paymentIntent,paymentRequest);
-        System.err.println(payment.getFirstName().concat(" "+payment.getLastName()));
+
         Payment existPayment=null;
         try {
             existPayment =paymentRepository.findByUserId(userId);
@@ -75,7 +77,11 @@ public class PaymentService {
 
         if(paymentIntent.getClientSecret()!=null){
             System.err.println(paymentIntent.getClientSecret());
-            if(existPayment==null || payment.getPaymentDetailsMap()==null || !payment.getName().equals(existPayment.getName())){
+            if(existPayment == null || existPayment.getPaymentDetailsMap() == null || !existPayment.getUserId().equals(userId)){
+                payment.setFirstName(paymentRequest.getFirstName());
+                payment.setLastName((paymentRequest.getLastName()));
+                payment.setUserId(userId);
+                payment.setName(paymentRequest.getFirstName()+" "+paymentRequest.getLastName());
                 payment.setPaymentDetailsMap(new HashMap<>());
                 payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(),paymentDetails);
                 payment=paymentRepository.save(payment);

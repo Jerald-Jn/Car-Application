@@ -49,6 +49,7 @@ public class CartService {
                     items.put(carId, CartItem.builder()
                             .imageUrl(newItem.getImageUrl())
                             .price(newItem.getPrice())
+                            .model(newItem.getModel())
                             .quantity(newItem.getQuantity())
                             .build());
                 }

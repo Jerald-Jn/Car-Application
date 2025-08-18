@@ -17,11 +17,5 @@ public class PaymentResponse {
     String id;
     String firstName;
     String lastName;
-    // UserInfo userInfo;
-    // String transactionId;
-    // String latest_charge;
-    // String status;
-    // long amount;
-    // String paymentMethod;
     Map<String,PaymentDetails> orderDetails;
 }

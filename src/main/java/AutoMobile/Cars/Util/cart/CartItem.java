@@ -12,10 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem {
-    String model;
+    
     String imageUrl;
     int price;
     int quantity;
+    String model;
 
     @Override
     public String toString() {
