@@ -1,8 +1,5 @@
 package AutoMobile.Cars.Util.cart;
 
-import java.util.Map;
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +9,16 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CartRequest {
-    Map<UUID,CartItem> items;
+@NoArgsConstructor
+public class CartItem {
+    String model;
+    String imageUrl;
+    int price;
+    int quantity;
 
     @Override
     public String toString() {
-        return "CartRequest [items=" + items + "]";
+        return "CartItem [imageUrl=" + imageUrl + ", price=" + price + ", quantity=" + quantity + "]";
     }
 }

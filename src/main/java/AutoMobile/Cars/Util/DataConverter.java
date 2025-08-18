@@ -1,19 +1,31 @@
 package AutoMobile.Cars.Util;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.stripe.model.PaymentIntent;
 
+import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.Cars;
 import AutoMobile.Cars.Model.Cart;
-import AutoMobile.Cars.Model.Order;
+import AutoMobile.Cars.Model.Payment;
+import AutoMobile.Cars.Model.User;
+import AutoMobile.Cars.Repository.UserRepo;
 import AutoMobile.Cars.Util.car.CarResponse;
 import AutoMobile.Cars.Util.cart.CartResponse;
-import AutoMobile.Cars.Util.order.OrderRequest;
-import AutoMobile.Cars.Util.order.OrderResponse;
+import AutoMobile.Cars.Util.payment.PaymentRequest;
+import AutoMobile.Cars.Util.payment.PaymentResponse;
 
 @Component
 public class DataConverter {
+
+    @Autowired
+    UserRepo userRepo;
     
     public static CarResponse carToCarResponse(Cars carEntity){
         return CarResponse.builder().carId(carEntity.getCarId()).model(carEntity.getModel())
@@ -23,24 +35,39 @@ public class DataConverter {
     }
 
     public static CartResponse convertToCartResponse(Cart cart){
-        return CartResponse.builder().id(cart.getId()).user(cart.getUser()).items(cart.getItems()).build();
+        return CartResponse.builder().id(cart.getId()).userId(cart.getUserId()).items(cart.getItems()).build();
     }
 
-    public Order convertTOrder(PaymentIntent paymentIntent, OrderRequest orderRequest) {
-        return Order.builder()
-                            .clientSecret(paymentIntent.getClientSecret()).first_name(orderRequest.getFirst_name()).last_name(orderRequest.getLast_name())
-                            .paymentMethod(paymentIntent.getPaymentMethod()).userInfo(orderRequest.getUserInfo()).amount(orderRequest.getAmount()).build();
-
+    public Payment convertToPayment(PaymentIntent paymentIntent,  PaymentRequest paymentRequest) {
+        Payment order= Payment.builder()
+                            .firstName(paymentRequest.getFirstName()).lastName(paymentRequest.getLastName())
+                            .name(paymentRequest.getFirstName().concat(paymentRequest.getLastName()))
+                            .build();
+        return order;
     }
 
-    public OrderResponse convertTOrderResponse(Order order) {
-        return OrderResponse.builder()
-                            .clientSecret(order.getClientSecret()).first_name(order.getFirst_name()).last_name(order.getLast_name())
-                            .transactionId(order.getTransactionId())
-                            .paymentMethod(order.getPaymentMethod()).userInfo(order.getUserInfo()).amount(order.getAmount()).build();
-
+    public PaymentResponse convertToPaymentResponse(Payment payment) {
+        PaymentResponse paymentResponse=PaymentResponse.builder()
+                            .id(payment.getId())
+                            .orderDetails(payment.getPaymentDetailsMap()).firstName(payment.getFirstName()).lastName(payment.getLastName())
+                            // .transactionId(order.getTransactionId())
+                            // .paymentMethod(order.getPaymentMethod()).userInfo(order.getUserInfo()).amount(order.getAmount())
+                            .build();
+        System.err.println(paymentResponse);
+        return paymentResponse;
     }
 
+    public UUID getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            String username= auth.getName(); // username
+            Optional<User> user = userRepo.findById(username);
+            if(user.isPresent()){
+                return user.get().getUserId();
+            }
+        }
+        throw new CustomRuntimeException("User not found");
+    }
 
 }
 

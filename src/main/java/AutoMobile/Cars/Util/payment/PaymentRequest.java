@@ -1,4 +1,4 @@
-package AutoMobile.Cars.Util.order;
+package AutoMobile.Cars.Util.payment;
 
 import AutoMobile.Cars.Model.UserInfo;
 import lombok.Builder;
@@ -8,10 +8,10 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class OrderRequest {
-    String id;
-    String first_name;
-    String last_name;
+public class PaymentRequest {
+    // String id;
+    String firstName;
+    String lastName;
     long amount;
     UserInfo userInfo;
 }

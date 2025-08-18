@@ -3,17 +3,19 @@ package AutoMobile.Cars.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import AutoMobile.Cars.Model.Cart;
 import AutoMobile.Cars.Repository.CartRepository;
 import AutoMobile.Cars.Util.DataConverter;
+import AutoMobile.Cars.Util.cart.CartItem;
+import AutoMobile.Cars.Util.cart.CartRequest;
 import AutoMobile.Cars.Util.cart.CartResponse;
 
 @Service
@@ -21,50 +23,78 @@ public class CartService {
 
     @Autowired
     CartRepository cartRepository;
+    @Autowired
+    DataConverter dataConverter;
     
-   public String getCurrentUsername() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()) {
-            return auth.getName(); // username
+
+    public CartResponse createCart(CartRequest cartRequest) {
+
+            UUID userId=dataConverter.getCurrentUserId();
+            Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
+            System.err.println("exitingCart -> " + exitingCart);
+            Cart cart = exitingCart.orElseGet(() -> new Cart(userId, new HashMap<>()));
+            System.err.println("cart -> " + cart);
+            Map<UUID, CartItem> items = cart.getItems();
+
+            for (Entry<UUID, CartItem> key : cartRequest.getItems().entrySet()) {
+                UUID carId = key.getKey();
+                CartItem newItem = key.getValue();
+
+                // If already exists update quantity
+                if (items.containsKey(carId)) {
+                    CartItem existingItem = items.get(carId);
+                    existingItem.setQuantity(existingItem.getQuantity() + 1);
+                } else {
+                    // If not exists create new
+                    items.put(carId, CartItem.builder()
+                            .imageUrl(newItem.getImageUrl())
+                            .price(newItem.getPrice())
+                            .quantity(newItem.getQuantity())
+                            .build());
+                }
+                cart.setItems(items);
+                cart = cartRepository.save(cart);
+            }
+            return DataConverter.convertToCartResponse(cart);
+
+    }
+
+    public CartResponse removeCart(UUID carId) {
+
+        UUID userId=dataConverter.getCurrentUserId();
+        Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
+        Cart cart = exitingCart
+                .orElseThrow(() -> new RuntimeException("No cart found for user: " + userId));
+
+        Map<UUID, CartItem> items = cart.getItems();
+
+        if (!items.containsKey(carId)) {
+            throw new RuntimeException("No car in cart -> " + carId);
         }
-        return null;
-    }
 
+        CartItem existingCartItem = items.get(carId);
 
-    public CartResponse createCart(String carId){
-        Optional<Cart> exitingCart=cartRepository.findByUser(getCurrentUsername());
-        Cart cart=exitingCart.orElseGet(()->new Cart(getCurrentUsername(), new HashMap<>()));
-        Map<String,Integer> items=cart.getItems();
-        items.put(carId, items.getOrDefault(carId, 0)+1);
-        cart.setItems(items);
-        cart=cartRepository.save(cart);
-        return DataConverter.convertToCartResponse(cart);
-    }
-
-    public CartResponse removeCart(String carId){
-        Optional<Cart> exitingCart=cartRepository.findByUser(getCurrentUsername());
-        Cart cart=exitingCart.orElseGet(()->new Cart(getCurrentUsername(), new HashMap<>()));
-        Map<String,Integer> items=cart.getItems();
-        int quantity=items.get(carId);
-        if(quantity>1){
-            items.put(carId, quantity-1);
-        }else{
+        if (existingCartItem.getQuantity() > 1) {
+            existingCartItem.setQuantity(existingCartItem.getQuantity() - 1);
+            items.put(carId, existingCartItem);
+        } else {
             items.remove(carId);
         }
-        cart.setItems(items);
-        cart=cartRepository.save(cart);
+
+        cart = cartRepository.save(cart);
         return DataConverter.convertToCartResponse(cart);
+       
     }
 
-    public CartResponse getCart(){
-        Optional<Cart> exitingCart=cartRepository.findByUser(getCurrentUsername());
-        Cart cart=exitingCart.orElseGet(()->new Cart(getCurrentUsername(), new HashMap<>()));
+    public CartResponse getCart() {
+        UUID useId=dataConverter.getCurrentUserId();
+        Optional<Cart> exitingCart = cartRepository.findByUserId(useId);
+        Cart cart = exitingCart.orElseGet(() -> new Cart(useId, new HashMap<>()));
         return DataConverter.convertToCartResponse(cart);
     }
-
 
     public List<CartResponse> getAllCart() {
-        List<Cart> cart=cartRepository.findAll();
-        return cart.stream().map(item->DataConverter.convertToCartResponse(item)).collect(Collectors.toList());
+        List<Cart> cart = cartRepository.findAll();
+        return cart.stream().map(item -> DataConverter.convertToCartResponse(item)).collect(Collectors.toList());
     }
 }

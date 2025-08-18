@@ -6,33 +6,29 @@ import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import AutoMobile.Cars.Util.cart.CartItem;
+import AutoMobile.Cars.Util.payment.PaymentDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "cart_for_car")
-public class Cart {
+@NoArgsConstructor
+@Document(collection = "Car-Payment")
+public class Payment {
     @Id
     String id;
     UUID userId;
-    Map<UUID,CartItem> items;
-
-    public Cart(UUID userId,Map<UUID,CartItem>  items){
-        this.userId=userId;
-        this.items=items;
-    }
-
-        @Override
+    String firstName;
+    String lastName;
+    String name;
+    Map<String,PaymentDetails> paymentDetailsMap;
+    @Override
     public String toString() {
-        return "Cart [id=" + id + ", user=" + userId + ", items=" + items + "]";
+        return "Order [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + " , orderDetails= "+paymentDetailsMap;
     }
 }
