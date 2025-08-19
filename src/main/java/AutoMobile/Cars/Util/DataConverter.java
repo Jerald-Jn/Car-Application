@@ -1,5 +1,6 @@
 package AutoMobile.Cars.Util;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,17 +42,15 @@ public class DataConverter {
     public Payment convertToPayment(PaymentIntent paymentIntent,  PaymentRequest paymentRequest) {
         Payment order= Payment.builder()
                             .firstName(paymentRequest.getFirstName()).lastName(paymentRequest.getLastName())
-                            .name(paymentRequest.getFirstName().concat(paymentRequest.getLastName()))
+                            .name(paymentRequest.getFirstName().concat(paymentRequest.getLastName())).paymentDetailsMap(new HashMap<>())
                             .build();
         return order;
     }
 
     public PaymentResponse convertToPaymentResponse(Payment payment) {
         PaymentResponse paymentResponse=PaymentResponse.builder()
-                            .id(payment.getId())
-                            .orderDetails(payment.getPaymentDetailsMap()).firstName(payment.getFirstName()).lastName(payment.getLastName())
-                            // .transactionId(order.getTransactionId())
-                            // .paymentMethod(order.getPaymentMethod()).userInfo(order.getUserInfo()).amount(order.getAmount())
+                            .id(payment.getId()).userId(payment.getUserId())
+                            .paymentDetails(payment.getPaymentDetailsMap()).firstName(payment.getFirstName()).lastName(payment.getLastName())
                             .build();
         System.err.println(paymentResponse);
         return paymentResponse;
@@ -61,8 +60,10 @@ public class DataConverter {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()) {
             String username= auth.getName(); // username
+            System.err.println("username -> "+username);
             Optional<User> user = userRepo.findById(username);
             if(user.isPresent()){
+                System.err.println("user -> "+user.get());
                 return user.get().getUserId();
             }
         }

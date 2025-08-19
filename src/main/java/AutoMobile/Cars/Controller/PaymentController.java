@@ -20,7 +20,7 @@ import AutoMobile.Cars.Util.payment.PaymentResponse;
 
 @RestController
 @RequestMapping("/payments")
-@CrossOrigin()
+@CrossOrigin(origins = "http://localhost:5173")
 public class PaymentController {
 
     @Autowired
@@ -36,7 +36,8 @@ public class PaymentController {
     }
 
     @GetMapping("/verify-payment/{clientSecret}")
-    public PaymentResponse verifyPayment(@PathVariable Object clientSecret) throws Exception { 
+    public PaymentResponse verifyPayment(@PathVariable String clientSecret) throws Exception { 
+        System.out.println("PaymentController.verifyPayment()");
         System.err.println(clientSecret);        
         return paymentService.verifyPayment(clientSecret);
     }

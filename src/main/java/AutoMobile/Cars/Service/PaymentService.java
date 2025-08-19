@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Service;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethod;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
@@ -22,10 +22,9 @@ import AutoMobile.Cars.Util.payment.PaymentDetails;
 import AutoMobile.Cars.Util.payment.PaymentRequest;
 import AutoMobile.Cars.Util.payment.PaymentResponse;
 
-
 @Service
 public class PaymentService {
-    
+
     @Value("${stripe.secretKey}")
     private String secretKey;
 
@@ -35,18 +34,17 @@ public class PaymentService {
     PaymentRepository paymentRepository;
     @Autowired
     UserRepo userRepo;
-    
 
-    public String createPayment(PaymentRequest paymentRequest) throws StripeException{
-        
+    public String createPayment(PaymentRequest paymentRequest) throws StripeException {
+
         Stripe.apiKey = secretKey;
 
-        UUID userId=dataConverter.getCurrentUserId();
+        UUID userId = dataConverter.getCurrentUserId();
         System.err.println(userId);
-        
+
         long amount = Math.round(paymentRequest.getAmount() * 100);
-        System.out.println("PaymentController.createPayment()");
-        System.out.println(amount+" "+paymentRequest);
+        System.out.println("PaymentService.createPayment()");
+        System.out.println(amount + " " + paymentRequest);
         System.err.println(paymentRepository.findByUserId(userId));
         if (amount < 200) { // RM 2 minimum for MYR
             throw new IllegalArgumentException("Amount must be at least RM 2.00");
@@ -62,54 +60,59 @@ public class PaymentService {
 
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
-        Payment payment=dataConverter.convertToPayment(paymentIntent,paymentRequest);
-
-        Payment existPayment=null;
-        try {
-            existPayment =paymentRepository.findByUserId(userId);
-        } catch (Exception e) {
-            e.getStackTrace();
-        }
-        UserInfo userInfo=paymentRequest.getUserInfo();
-
-        PaymentDetails paymentDetails=PaymentDetails.builder().status(paymentIntent.getStatus()).userInfo(userInfo).Id(paymentIntent.getId()).
-                                    amount(paymentRequest.getAmount()).paymentMethod(paymentIntent.getPaymentMethod()).build();
-
-        if(paymentIntent.getClientSecret()!=null){
+        if (paymentIntent.getClientSecret() != null) {
             System.err.println(paymentIntent.getClientSecret());
-            if(existPayment == null || existPayment.getPaymentDetailsMap() == null || !existPayment.getUserId().equals(userId)){
-                payment.setFirstName(paymentRequest.getFirstName());
-                payment.setLastName((paymentRequest.getLastName()));
-                payment.setUserId(userId);
-                payment.setName(paymentRequest.getFirstName()+" "+paymentRequest.getLastName());
-                payment.setPaymentDetailsMap(new HashMap<>());
-                payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(),paymentDetails);
-                payment=paymentRepository.save(payment);
-            }else{
-            existPayment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
-            payment=paymentRepository.save(existPayment);
+            try {
+                UserInfo userInfo = paymentRequest.getUserInfo();
+                PaymentDetails paymentDetails = PaymentDetails.builder().status(paymentIntent.getStatus())
+                        .userInfo(userInfo).Id(paymentIntent.getId()).amount(paymentIntent.getAmount())
+                        .paymentMethod(paymentIntent.getPaymentMethod()).build();
+                Payment existPayment = paymentRepository.findByUserId(userId);
+                if (existPayment == null || existPayment.getPaymentDetailsMap() == null
+                        || !existPayment.getUserId().equals(userId)) {
+                    Payment payment = dataConverter.convertToPayment(paymentIntent, paymentRequest);
+                    payment.setUserId(userId);
+                    payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
+                    payment = paymentRepository.save(payment);
+                } else {
+                    existPayment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
+                    existPayment = paymentRepository.save(existPayment);
+                }
+            } catch (Exception e) {
+                throw new CustomRuntimeException("Client secret not created");
             }
         }
-        else{
-            throw new CustomRuntimeException("Client secret not created");
-        }
         return paymentIntent.getClientSecret();
-    } 
+    }
 
-    public PaymentResponse verifyPayment(Object clientSecret) throws StripeException{
-        Stripe.apiKey= secretKey;
+    public PaymentResponse verifyPayment(Object clientSecret) throws StripeException {
+        Stripe.apiKey = secretKey;
         System.err.println(clientSecret);
-        Payment payment=paymentRepository.findByPaymentDetailsMap(clientSecret);
-        System.err.println(payment);
-        PaymentIntent paymentIntent=PaymentIntent.retrieve(payment.getPaymentDetailsMap().get(clientSecret).getId());
+        UUID userId = dataConverter.getCurrentUserId();
+        System.err.println("userId -> "+userId);
+        Payment payment=paymentRepository.findByUserId(userId);
+        PaymentIntent paymentIntent = PaymentIntent.retrieve(payment.getPaymentDetailsMap().get(clientSecret).getId());
         System.err.println(paymentIntent);
-        PaymentDetails paymentDetails=payment.getPaymentDetailsMap().get(paymentIntent.getClientSecret());
+        PaymentDetails paymentDetails = payment.getPaymentDetailsMap().get(paymentIntent.getClientSecret());
         paymentDetails.setId(paymentIntent.getId());
         paymentDetails.setLatest_charge(paymentIntent.getLatestCharge());
-        paymentDetails.setPaymentMethod(paymentIntent.getPaymentMethodOptions().toJson());
+        PaymentMethod method = PaymentMethod.retrieve(paymentIntent.getPaymentMethod());
+        paymentDetails.setPaymentMethod(method.getType());
         paymentDetails.setStatus(paymentIntent.getStatus());
         payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
+        paymentRepository.save(payment);
         System.err.println(payment);
         return dataConverter.convertToPaymentResponse(payment);
     }
+
+    public PaymentResponse verifyPayment1(Object clientSecret) {
+        try {
+            
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Unimplemented method 'verifyPayment'");
+        }
+        return null;
+    }
+
+
 }

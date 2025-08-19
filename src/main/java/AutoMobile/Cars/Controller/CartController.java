@@ -80,6 +80,7 @@ public class CartController {
 
     @DeleteMapping("/clear-cart")
     public String clearCart(){
+        System.out.println("CartController.clearCart()");
         return cartService.clearCart();
     }
 }

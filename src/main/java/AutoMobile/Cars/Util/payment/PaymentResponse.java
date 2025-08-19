@@ -1,6 +1,7 @@
 package AutoMobile.Cars.Util.payment;
 
 import java.util.Map;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import lombok.Setter;
 public class PaymentResponse {
     String id;
     String firstName;
+    UUID userId;
     String lastName;
-    Map<String,PaymentDetails> orderDetails;
+    Map<String,PaymentDetails> paymentDetails;
 }

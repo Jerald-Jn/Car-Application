@@ -107,6 +107,8 @@ public class CartService {
             if(cart.isPresent()){
                 Map<UUID,CartItem> items=cart.get().getItems();
                 items.clear();
+                System.err.println("items -> "+cart.get().getItems());
+                cartRepository.save(cart.get());
                 if(items.isEmpty()){
                     return "Cart cleared";
                 }

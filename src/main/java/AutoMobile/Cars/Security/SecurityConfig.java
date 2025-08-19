@@ -58,8 +58,6 @@ public class SecurityConfig {
                         "/user",
                         "/user/add",
                         "/login",
-                        "/payments/create-payment",
-                        // "/cart/**",
                         "/cars/**").permitAll()
                         // It is used to enable authentication and we acces the api using login or token
                         .anyRequest().authenticated())
