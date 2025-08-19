@@ -91,15 +91,10 @@ public class TotalCarService {
     public List<Cars> getListOfCars() throws CustomException {
         try {
             List<Cars> lisOfCars=repository.findAll();
-            if(lisOfCars!=null){
-                // for(int i=0;i<lisOfCars.size();i++){
-                //     System.out.println(lisOfCars.get(i).getCarImage());
-                // }
-                return lisOfCars;
-            }
+            return lisOfCars;
         } catch (Exception e) {
             throw new CustomException("error in getcar method");
         }
-        return null;
     }
+
 }

@@ -37,7 +37,7 @@ public class PaymentService {
     UserRepo userRepo;
     
 
-    public PaymentResponse createPayment(PaymentRequest paymentRequest) throws StripeException{
+    public String createPayment(PaymentRequest paymentRequest) throws StripeException{
         
         Stripe.apiKey = secretKey;
 
@@ -93,18 +93,20 @@ public class PaymentService {
         else{
             throw new CustomRuntimeException("Client secret not created");
         }
-        return dataConverter.convertToPaymentResponse(payment);
+        return paymentIntent.getClientSecret();
     } 
 
-    public PaymentResponse verifyPayment(String paymentDetailsId) throws StripeException{
+    public PaymentResponse verifyPayment(Object clientSecret) throws StripeException{
         Stripe.apiKey= secretKey;
-        PaymentIntent paymentIntent=PaymentIntent.retrieve(paymentDetailsId);
+        System.err.println(clientSecret);
+        Payment payment=paymentRepository.findByPaymentDetailsMap(clientSecret);
+        System.err.println(payment);
+        PaymentIntent paymentIntent=PaymentIntent.retrieve(payment.getPaymentDetailsMap().get(clientSecret).getId());
         System.err.println(paymentIntent);
-        Payment payment=paymentRepository.findByPaymentDetailsMap(paymentIntent.getClientSecret());
         PaymentDetails paymentDetails=payment.getPaymentDetailsMap().get(paymentIntent.getClientSecret());
         paymentDetails.setId(paymentIntent.getId());
         paymentDetails.setLatest_charge(paymentIntent.getLatestCharge());
-        paymentDetails.setPaymentMethod(paymentIntent.getPaymentMethod());
+        paymentDetails.setPaymentMethod(paymentIntent.getPaymentMethodOptions().toJson());
         paymentDetails.setStatus(paymentIntent.getStatus());
         payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
         System.err.println(payment);

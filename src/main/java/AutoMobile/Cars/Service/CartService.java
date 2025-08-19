@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.Cart;
 import AutoMobile.Cars.Repository.CartRepository;
 import AutoMobile.Cars.Util.DataConverter;
@@ -97,5 +98,23 @@ public class CartService {
     public List<CartResponse> getAllCart() {
         List<Cart> cart = cartRepository.findAll();
         return cart.stream().map(item -> DataConverter.convertToCartResponse(item)).collect(Collectors.toList());
+    }
+
+    public String clearCart() {
+        try {
+            UUID userId=dataConverter.getCurrentUserId();
+            Optional<Cart> cart = cartRepository.findByUserId(userId);
+            if(cart.isPresent()){
+                Map<UUID,CartItem> items=cart.get().getItems();
+                items.clear();
+                if(items.isEmpty()){
+                    return "Cart cleared";
+                }
+                
+            }
+        } catch (Exception e) {
+            throw new CustomRuntimeException("Unimplemented method 'clearCart'");
+        }
+        return null;
     }
 }

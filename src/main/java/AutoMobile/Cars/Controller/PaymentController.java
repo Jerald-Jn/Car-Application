@@ -31,14 +31,14 @@ public class PaymentController {
     DataConverter dataConverter;
 
     @PostMapping("/create-payment")
-    public PaymentResponse createPayment(@RequestBody PaymentRequest paymentRequest) throws Exception { 
+    public String createPayment(@RequestBody PaymentRequest paymentRequest) throws Exception { 
         return paymentService.createPayment(paymentRequest);
     }
 
-    @GetMapping("/verify-payment/{paymentDetailsId}")
-    public PaymentResponse verifyPayment(@PathVariable String paymentDetailsId) throws Exception { 
-        System.err.println(paymentDetailsId);        
-        return paymentService.verifyPayment(paymentDetailsId);
+    @GetMapping("/verify-payment/{clientSecret}")
+    public PaymentResponse verifyPayment(@PathVariable Object clientSecret) throws Exception { 
+        System.err.println(clientSecret);        
+        return paymentService.verifyPayment(clientSecret);
     }
 
     @GetMapping()

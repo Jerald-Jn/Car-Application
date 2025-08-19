@@ -67,7 +67,7 @@ public class CartController {
     }
 
 
-    @GetMapping("all")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllCart(){
         List<CartResponse> cartResponse=null;
         try {
@@ -76,5 +76,10 @@ public class CartController {
             throw new CustomRuntimeException("get cart error");
         }
         return ResponseEntity.ok().body(cartResponse);
+    }
+
+    @DeleteMapping("/clear-cart")
+    public String clearCart(){
+        return cartService.clearCart();
     }
 }
