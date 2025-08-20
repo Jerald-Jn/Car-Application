@@ -16,8 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PaymentResponse {
     String id;
-    String firstName;
     UUID userId;
-    String lastName;
     Map<String,PaymentDetails> paymentDetails;
 }

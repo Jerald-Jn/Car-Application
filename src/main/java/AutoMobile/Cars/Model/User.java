@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "User-Car-DB")
+@Document(collection = "User")
 public class User {
     private UUID userId;
     @Id
@@ -25,7 +25,7 @@ public class User {
     private String password;
     private UserInfo userInfo;
     // @DBRef(lazy = true)
-    private Car car;
+    // private Car car;
 
     public void setUserId(UUID uuid) {
         this.userId = uuid;
@@ -33,8 +33,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", userInfo=" + userInfo
-                + ", car=" + car + "]";
+        return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", userInfo=" + userInfo +"]";
+                // + ", car=" + car + "]";
     }
 
     

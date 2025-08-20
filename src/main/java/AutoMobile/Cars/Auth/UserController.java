@@ -39,27 +39,6 @@ public class UserController {
         
     }
 
-    // @GetMapping("/logout")
-    // public ResponseEntity<?> logout(HttpServletRequest request) {
-    //     try {
-    //         final String token = request.getHeader("Authorization");
-    //         boolean chceklogout = false;
-    //     if (token != null) {
-    //         if(token.startsWith("Bearer ")){
-    //             String tempToken = token.substring(7);
-    //             chceklogout=jwtBlacklist.blackToken(tempToken);
-    //         }else if (token.startsWith("Basic ")) {
-    //             String tempToken=token.substring(6);
-    //             chceklogout=jwtBlacklist.blackToken(tempToken);
-    //         }
-    //     }
-    //     if(chceklogout){
-    //             return new ResponseEntity<>("Logout successfully",HttpStatus.ACCEPTED);
-    //         }
-    //     return new ResponseEntity<>("Pls logout correctly", HttpStatus.BAD_REQUEST);
-    //     } catch (Exception e) {
-    //         throw new CustomRuntimeException(e);
-    //     }
-    // }
+    
     
 }

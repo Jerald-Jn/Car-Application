@@ -9,9 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentRequest {
-    // String id;
-    String firstName;
-    String lastName;
     long amount;
     UserInfo userInfo;
 }

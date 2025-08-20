@@ -23,15 +23,11 @@ public class Payment {
     @Id
     String id;
     UUID userId;
-    String firstName;
-    String lastName;
-    String name;
     Map<String,PaymentDetails> paymentDetailsMap;
     
     @Override
     public String toString() {
-        return "Payment [id=" + id + ", userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", name=" + name + ", paymentDetailsMap=" + paymentDetailsMap + "]";
+        return "Payment [id=" + id + ", userId=" + userId + ", paymentDetailsMap=" + paymentDetailsMap + "]";
     }
    
 }

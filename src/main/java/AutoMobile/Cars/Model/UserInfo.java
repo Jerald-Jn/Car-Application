@@ -12,6 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
+    private String firstName;
+    private String lastName;
     private String address;
     private String phoneNo;
     private String email;
@@ -20,8 +22,9 @@ public class UserInfo {
     private String pincode;
     @Override
     public String toString() {
-        return "UserDetail [Address=" + address + ", phoneNo=" + phoneNo + ", email=" + email + ", State=" + state + ", pincode=" + pincode + "]";
+        return "UserInfo [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", phoneNo="
+                + phoneNo + ", email=" + email + ", state=" + state + ", city=" + city + ", pincode=" + pincode + "]";
     }
-
+    
     
 }

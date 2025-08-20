@@ -40,9 +40,7 @@ public class DataConverter {
     }
 
     public Payment convertToPayment(PaymentIntent paymentIntent,  PaymentRequest paymentRequest) {
-        Payment order= Payment.builder()
-                            .firstName(paymentRequest.getFirstName()).lastName(paymentRequest.getLastName())
-                            .name(paymentRequest.getFirstName().concat(paymentRequest.getLastName())).paymentDetailsMap(new HashMap<>())
+        Payment order= Payment.builder().paymentDetailsMap(new HashMap<>())
                             .build();
         return order;
     }
@@ -50,7 +48,7 @@ public class DataConverter {
     public PaymentResponse convertToPaymentResponse(Payment payment) {
         PaymentResponse paymentResponse=PaymentResponse.builder()
                             .id(payment.getId()).userId(payment.getUserId())
-                            .paymentDetails(payment.getPaymentDetailsMap()).firstName(payment.getFirstName()).lastName(payment.getLastName())
+                            .paymentDetails(payment.getPaymentDetailsMap())
                             .build();
         System.err.println(paymentResponse);
         return paymentResponse;

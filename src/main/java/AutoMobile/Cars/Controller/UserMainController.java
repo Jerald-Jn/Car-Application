@@ -24,31 +24,31 @@ import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.User;
 import AutoMobile.Cars.Security.JwtBlacklist;
-import AutoMobile.Cars.Service.CarService;
 // import jakarta.servlet.http.HttpServletRequest;
+import AutoMobile.Cars.Service.UserMainService;
 
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:5173")
-public class CarController {
+public class UserMainController {
 
-	Logger log=LoggerFactory.getLogger(CarController.class);
+	Logger log=LoggerFactory.getLogger(UserMainController.class);
 
 	@Value("${token.file}")
 	String fileName;
 
-	CarService carService;
+	UserMainService userMainService;
 	@Autowired
     JwtBlacklist jwtBlacklist;
 
-	public CarController(CarService carService) {
-		this.carService = carService;
+	public UserMainController(UserMainService userMainService) {
+		this.userMainService = userMainService;
 	}
 
 	@GetMapping()
 	public ResponseEntity<?> get() throws Exception {
 		try {
-			return new ResponseEntity<>(carService.getAll(), HttpStatus.OK);
+			return new ResponseEntity<>(userMainService.getAll(), HttpStatus.OK);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
 		} catch (Exception e) {
@@ -61,7 +61,7 @@ public class CarController {
 		try {
 			log.info("user : {}",user);
 			UUID uuid = UUID.randomUUID();
-			return new ResponseEntity<>(carService.addUser(user, uuid), HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(userMainService.addUser(user, uuid), HttpStatus.ACCEPTED);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
 		} catch (Exception e) {
@@ -73,7 +73,7 @@ public class CarController {
 	public ResponseEntity<?> getByID(@RequestParam(required = true) String userName) throws Exception {
 		try {
 			log.info("find userName : {}",userName);
-			return new ResponseEntity<>(carService.getByID(userName), HttpStatus.OK);
+			return new ResponseEntity<>(userMainService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException(String.format("error ->" + r + "Unable to find the file : %s", fileName));
 		} catch (Exception e) {
@@ -85,7 +85,7 @@ public class CarController {
 	public ResponseEntity<?> delete(@RequestParam(required = true) String userName) throws Exception {
 		try {
 			log.info(" delete userName : {}", userName);
-			return new ResponseEntity<>(carService.delete(userName), HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(userMainService.delete(userName), HttpStatus.ACCEPTED);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
 		} catch (Exception e) {
@@ -109,28 +109,4 @@ public class CarController {
 		return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
 	}
 
-	// @GetMapping("/logout")
-    // public ResponseEntity<?> logout(HttpServletRequest request) {
-    //     System.out.println("UserController.logout()");
-    //     try {
-    //         final String token = request.getHeader("Authorization");
-    //         boolean chceklogout = false;
-    //     if (token != null) {
-    //         if(token.startsWith("Bearer ")){
-    //             String tempToken = token.substring(7);
-    //             chceklogout=jwtBlacklist.blackToken(tempToken);
-    //         }else if (token.startsWith("Basic ")) {
-    //             String tempToken=token.substring(6);
-    //             System.out.println(tempToken);
-    //             chceklogout=jwtBlacklist.blackToken(tempToken);
-    //         }
-    //     }
-    //     if(chceklogout){
-    //             return new ResponseEntity<>("Logout successfully",HttpStatus.ACCEPTED);
-    //         }
-    //     return new ResponseEntity<>("Pls logout correctly", HttpStatus.BAD_REQUEST);
-    //     } catch (Exception e) {
-    //         throw new CustomRuntimeException(e);
-    //     }
-    // }
 }
