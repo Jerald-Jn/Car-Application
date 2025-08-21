@@ -33,7 +33,6 @@ public class CartController {
     public ResponseEntity<?> createCart(@RequestBody CartRequest cartRequest){
         CartResponse cartResponse=null;
         try {
-            System.err.println(cartRequest);
             cartResponse=cartService.createCart(cartRequest);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
@@ -43,12 +42,12 @@ public class CartController {
 
     @DeleteMapping("/remove/{carId}")
     public ResponseEntity<?> removeCart(@PathVariable UUID carId){
+        System.out.println("CartController.removeCart()");
         CartResponse cartResponse=null;
         try {
-            System.err.println(carId);
             cartResponse=cartService.removeCart(carId);
         } catch (Exception e) {
-            throw new CustomRuntimeException("create cart error");
+            throw new CustomRuntimeException("remove cart error");
         }
         return ResponseEntity.ok().body(cartResponse);
     }
@@ -83,4 +82,17 @@ public class CartController {
         System.out.println("CartController.clearCart()");
         return cartService.clearCart();
     }
+
+    @DeleteMapping("/delete/{carId}")
+    public ResponseEntity<?> clearSpecficItem(@PathVariable UUID carId){
+        System.out.println("CartController.removeCart()");
+        String cartResponse=null;
+        try {
+            cartResponse=cartService.clearSpecficItem(carId);
+        } catch (Exception e) {
+            throw new CustomRuntimeException("remove cart error");
+        }
+        return ResponseEntity.ok().body(cartResponse);
+    }
+
 }

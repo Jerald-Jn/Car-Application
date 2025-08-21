@@ -42,7 +42,7 @@ public class PaymentService {
         UUID userId = dataConverter.getCurrentUserId();
         System.err.println(userId);
 
-        long amount = Math.round(paymentRequest.getAmount() * 100);
+        long amount = Math.round(paymentRequest.getAmount());
         System.out.println("PaymentService.createPayment()");
         System.out.println(amount + " " + paymentRequest);
         System.err.println(paymentRepository.findByUserId(userId));
