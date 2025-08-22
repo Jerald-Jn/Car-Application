@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/cart")
-@CrossOrigin()
+@CrossOrigin
 @AllArgsConstructor
 public class CartController {
 
@@ -36,6 +36,19 @@ public class CartController {
             cartResponse=cartService.createCart(cartRequest);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
+        }
+        return ResponseEntity.ok().body(cartResponse);
+    }
+
+    @GetMapping("/increase/{carId}")
+    public ResponseEntity<?> increaseQuantity(@PathVariable UUID carId){
+        System.out.println("CartController.increaseQuantity()");
+        CartResponse cartResponse=null;
+        try {
+            System.out.println(carId);
+            cartResponse=cartService.increaseQuantity(carId);
+        } catch (Exception e) {
+            throw new CustomRuntimeException("increase cart quantity error");
         }
         return ResponseEntity.ok().body(cartResponse);
     }

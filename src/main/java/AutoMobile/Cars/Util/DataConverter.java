@@ -35,7 +35,7 @@ public class DataConverter {
         .year(carEntity.getYear()).carLogo(carEntity.getCarLogo()).carImage(carEntity.getCarImage()).build();
     }
 
-    public static CartResponse convertToCartResponse(Cart cart){
+    public CartResponse convertToCartResponse(Cart cart){
         return CartResponse.builder().id(cart.getId()).userId(cart.getUserId()).items(cart.getItems()).build();
     }
 

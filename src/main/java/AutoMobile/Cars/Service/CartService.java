@@ -56,7 +56,7 @@ public class CartService {
             cart.setItems(items);
             cart = cartRepository.save(cart);
         }
-        return DataConverter.convertToCartResponse(cart);
+        return dataConverter.convertToCartResponse(cart);
 
     }
 
@@ -83,7 +83,7 @@ public class CartService {
         }
 
         cart = cartRepository.save(cart);
-        return DataConverter.convertToCartResponse(cart);
+        return dataConverter.convertToCartResponse(cart);
 
     }
 
@@ -91,12 +91,12 @@ public class CartService {
         UUID useId = dataConverter.getCurrentUserId();
         Optional<Cart> exitingCart = cartRepository.findByUserId(useId);
         Cart cart = exitingCart.orElseGet(() -> new Cart(useId, new HashMap<>()));
-        return DataConverter.convertToCartResponse(cart);
+        return dataConverter.convertToCartResponse(cart);
     }
 
     public List<CartResponse> getAllCart() {
         List<Cart> cart = cartRepository.findAll();
-        return cart.stream().map(item -> DataConverter.convertToCartResponse(item)).collect(Collectors.toList());
+        return cart.stream().map(item -> dataConverter.convertToCartResponse(item)).collect(Collectors.toList());
     }
 
     public String clearCart() {
@@ -137,5 +137,22 @@ public class CartService {
             throw new CustomRuntimeException("Unimplemented method 'clearSpecficItem'");
         }
         return null;
+    }
+
+    public CartResponse increaseQuantity(UUID carId) {
+        UUID userId = dataConverter.getCurrentUserId();
+        Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
+        System.err.println("increaseQuantity cart -> " + exitingCart);
+        Cart cart = exitingCart.orElseGet(() -> new Cart(userId, new HashMap<>()));
+        System.err.println("cart -> " + cart);
+        Map<UUID, CartItem> items = cart.getItems();
+        System.err.println(items.get(carId));
+        if(items.containsKey(carId)){
+            CartItem cartItem=items.get(carId);
+            cartItem.setQuantity(cartItem.getQuantity()+1);
+            cart=cartRepository.save(cart);
+            return dataConverter.convertToCartResponse(cart);
+        }
+        throw new UnsupportedOperationException("Unimplemented method 'increaseQuantity'");
     }
 }
