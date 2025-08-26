@@ -1,5 +1,6 @@
 package AutoMobile.Cars.Util.car;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -30,4 +31,5 @@ public class CarResponse {
     private String color;
     private Object carImage;
     private Object carLogo;
+    private List<Object> images;
 }

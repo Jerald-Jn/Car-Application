@@ -16,7 +16,6 @@ import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.Payment;
 import AutoMobile.Cars.Model.UserInfo;
 import AutoMobile.Cars.Repository.PaymentRepository;
-import AutoMobile.Cars.Repository.UserRepo;
 import AutoMobile.Cars.Util.DataConverter;
 import AutoMobile.Cars.Util.payment.PaymentDetails;
 import AutoMobile.Cars.Util.payment.PaymentRequest;
@@ -32,20 +31,13 @@ public class PaymentService {
     DataConverter dataConverter;
     @Autowired
     PaymentRepository paymentRepository;
-    @Autowired
-    UserRepo userRepo;
 
     public String createPayment(PaymentRequest paymentRequest) throws StripeException {
 
         Stripe.apiKey = secretKey;
 
         UUID userId = dataConverter.getCurrentUserId();
-        System.err.println(userId);
-
         long amount = Math.round(paymentRequest.getAmount());
-        System.out.println("PaymentService.createPayment()");
-        System.out.println(amount + " " + paymentRequest);
-        System.err.println(paymentRepository.findByUserId(userId));
         if (amount < 200) { // RM 2 minimum for MYR
             throw new IllegalArgumentException("Amount must be at least RM 2.00");
         }
@@ -61,7 +53,6 @@ public class PaymentService {
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
         if (paymentIntent.getClientSecret() != null) {
-            System.err.println(paymentIntent.getClientSecret());
             try {
                 UserInfo userInfo = paymentRequest.getUserInfo();
                 PaymentDetails paymentDetails = PaymentDetails.builder().status(paymentIntent.getStatus())
@@ -86,13 +77,11 @@ public class PaymentService {
     }
 
     public PaymentResponse verifyPayment(Object clientSecret) throws StripeException {
+
         Stripe.apiKey = secretKey;
-        System.err.println(clientSecret);
         UUID userId = dataConverter.getCurrentUserId();
-        System.err.println("userId -> "+userId);
         Payment payment=paymentRepository.findByUserId(userId);
         PaymentIntent paymentIntent = PaymentIntent.retrieve(payment.getPaymentDetailsMap().get(clientSecret).getId());
-        System.err.println(paymentIntent);
         PaymentDetails paymentDetails = payment.getPaymentDetailsMap().get(paymentIntent.getClientSecret());
         paymentDetails.setId(paymentIntent.getId());
         paymentDetails.setLatest_charge(paymentIntent.getLatestCharge());
@@ -101,18 +90,7 @@ public class PaymentService {
         paymentDetails.setStatus(paymentIntent.getStatus());
         payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
         paymentRepository.save(payment);
-        System.err.println(payment);
         return dataConverter.convertToPaymentResponse(payment);
     }
-
-    public PaymentResponse verifyPayment1(Object clientSecret) {
-        try {
-            
-        } catch (Exception e) {
-            throw new UnsupportedOperationException("Unimplemented method 'verifyPayment'");
-        }
-        return null;
-    }
-
 
 }

@@ -17,18 +17,16 @@ public class CustomLogout implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        System.out.println("CustomLogout.logout()");
-             try {
+    System.out.println("CustomLogout.logout()");
+        try {
             final String token = request.getHeader("Authorization");
             boolean chceklogout = false;
         if (token != null) {
             if(token.startsWith("Bearer ")){
                 String tempToken = token.substring(7);
-                System.err.println(tempToken);
                 chceklogout=jwtBlacklist.blackToken(tempToken);
             }else if (token.startsWith("Basic ")) {
                 String tempToken=token.substring(6);
-                System.err.println(tempToken);
                 chceklogout=jwtBlacklist.blackToken(tempToken);
             }
         }

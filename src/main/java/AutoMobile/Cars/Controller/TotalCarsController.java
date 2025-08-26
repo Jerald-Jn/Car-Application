@@ -30,10 +30,12 @@ public class TotalCarsController {
     TotalCarService service;
 
     @PostMapping("/add")
-    public ResponseEntity<?> get(@RequestPart("cars") String jsonStringcar, @RequestPart("image") MultipartFile carImage,@RequestPart("logo") MultipartFile carLogo)
+    public ResponseEntity<?> get(@RequestPart("cars") String jsonStringcar, @RequestPart("files")List<MultipartFile> images,
+                        @RequestPart("banner") MultipartFile carImage,@RequestPart("logo") MultipartFile carLogo)
             throws CustomException {
         try {
-            return new ResponseEntity<>(service.addCar(jsonStringcar, carImage,carLogo), HttpStatus.ACCEPTED);
+            System.out.println("TotalCarsController.get()");
+            return new ResponseEntity<>(service.addCar(jsonStringcar, images, carImage,carLogo ), HttpStatus.ACCEPTED);
         } catch (Exception e) {
             throw new CustomException(e);
         }
@@ -42,6 +44,7 @@ public class TotalCarsController {
     @GetMapping("/get/{value}")
     public ResponseEntity<?> get(@PathVariable String value) throws CustomException {
         try {
+            System.out.println("TotalCarsController.get()");
             List<CarResponse> response=service.getCar(value);
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } catch (CustomException e) {
@@ -49,25 +52,10 @@ public class TotalCarsController {
         }
     }
 
-    @GetMapping("/getImage/{value}")
-    public ResponseEntity<?> getImage(@PathVariable String value) throws CustomException {
-        try {
-            // byte[] image=service.getImage(value);
-            // HttpHeaders headers = new HttpHeaders();
-            // headers.setContentType(MediaType.IMAGE_JPEG);
-            // return new ResponseEntity<>(image,headers, HttpStatus.ACCEPTED);
-            Object image=service.getImage(value);
-            return ResponseEntity.ok().body(image);
-        } catch (CustomException e) {
-            throw new CustomException(e);
-        }
-    }
-
-
-
     @GetMapping("")
     public ResponseEntity<?> getListOfCars() throws CustomException{
         try {
+            System.out.println("TotalCarsController.getListOfCars()");
             List<Cars> totalCars=service.getListOfCars();
             if(totalCars!=null){
                 return ResponseEntity.ok().body(totalCars);

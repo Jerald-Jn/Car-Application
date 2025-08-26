@@ -24,18 +24,14 @@ public class User {
     private String userName;
     private String password;
     private UserInfo userInfo;
-    // @DBRef(lazy = true)
-    // private Car car;
 
     public void setUserId(UUID uuid) {
         this.userId = uuid;
     }
-
+    
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", userInfo=" + userInfo +"]";
-                // + ", car=" + car + "]";
+        return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", userInfo=" + userInfo
+                + "]";
     }
-
-    
 }

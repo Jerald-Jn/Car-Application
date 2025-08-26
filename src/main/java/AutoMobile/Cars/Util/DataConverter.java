@@ -1,6 +1,9 @@
 package AutoMobile.Cars.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,10 +32,16 @@ public class DataConverter {
     UserRepo userRepo;
     
     public static CarResponse carToCarResponse(Cars carEntity){
+        List<Object> imagesList=new ArrayList<>();
+        for (Map.Entry<String,Object> images: carEntity.getImages().entrySet()) {
+            imagesList.add(images.getValue());
+        }
         return CarResponse.builder().carId(carEntity.getCarId()).model(carEntity.getModel())
         .color(carEntity.getColor()).engineCapacity(carEntity.getEngineCapacity()).fuelType(carEntity.getFuelType()).make(carEntity.getMake())
         .mileage(carEntity.getMileage()).price(carEntity.getPrice()).transmission(carEntity.getTransmission()).vin(carEntity.getVin())
-        .year(carEntity.getYear()).carLogo(carEntity.getCarLogo()).carImage(carEntity.getCarImage()).build();
+        .year(carEntity.getYear()).carLogo(carEntity.getCarLogo()).carImage(carEntity.getCarImage())
+        .images(imagesList)
+        .build();
     }
 
     public CartResponse convertToCartResponse(Cart cart){
@@ -50,7 +59,6 @@ public class DataConverter {
                             .id(payment.getId()).userId(payment.getUserId())
                             .paymentDetails(payment.getPaymentDetailsMap())
                             .build();
-        System.err.println(paymentResponse);
         return paymentResponse;
     }
 
@@ -58,10 +66,8 @@ public class DataConverter {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()) {
             String username= auth.getName(); // username
-            System.err.println("username -> "+username);
             Optional<User> user = userRepo.findById(username);
             if(user.isPresent()){
-                System.err.println("user -> "+user.get());
                 return user.get().getUserId();
             }
         }

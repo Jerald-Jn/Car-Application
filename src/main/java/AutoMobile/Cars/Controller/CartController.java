@@ -33,6 +33,7 @@ public class CartController {
     public ResponseEntity<?> createCart(@RequestBody CartRequest cartRequest){
         CartResponse cartResponse=null;
         try {
+            System.out.println("CartController.createCart()");
             cartResponse=cartService.createCart(cartRequest);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
@@ -45,7 +46,6 @@ public class CartController {
         System.out.println("CartController.increaseQuantity()");
         CartResponse cartResponse=null;
         try {
-            System.out.println(carId);
             cartResponse=cartService.increaseQuantity(carId);
         } catch (Exception e) {
             throw new CustomRuntimeException("increase cart quantity error");
@@ -71,7 +71,6 @@ public class CartController {
         try {
             System.out.println("CartController.getCart()");
             cartResponse=cartService.getCart();
-            System.err.println(cartResponse);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
         }
@@ -83,6 +82,7 @@ public class CartController {
     public ResponseEntity<?> getAllCart(){
         List<CartResponse> cartResponse=null;
         try {
+            System.out.println("CartController.getAllCart()");
             cartResponse=cartService.getAllCart();
         } catch (Exception e) {
             throw new CustomRuntimeException("get cart error");

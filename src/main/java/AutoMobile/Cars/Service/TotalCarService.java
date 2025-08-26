@@ -30,16 +30,16 @@ public class TotalCarService {
 
     Map<String,List<Cars>> carMap=new HashMap<>();
 
-    public Cars addCar(String jsoncars, MultipartFile carImage,MultipartFile carLogo) throws CustomException {
+    public Cars addCar(String jsoncars, List<MultipartFile> images, MultipartFile carImage,MultipartFile carLogo) 
+    throws CustomException 
+    {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Cars cars = objectMapper.readValue(jsoncars, Cars.class);
-            cars.setCarImage(cloudinaryService.uploadImage(carImage));
-            cars.setCarLogo(cloudinaryService.uploadImage(carLogo));
-            cars.setCarId(UUID.randomUUID());
-            // HttpHeaders headers = new HttpHeaders();
-            // headers.setContentType(MediaType.IMAGE_JPEG);
-            return repository.save(cars);
+            Cars car = objectMapper.readValue(jsoncars, Cars.class);
+            cloudinaryService.uploadImage(car,images,carImage,carLogo);
+            car.setCarId(UUID.randomUUID());
+            return repository.save(car);
+            
         } catch (Exception e) {
             throw new CustomException("error in addcar method");
         }
@@ -73,19 +73,6 @@ public class TotalCarService {
             throw new CustomException("error in getcar method");
         }
         return null;
-    }
-
-    public Object getImage(String model) throws CustomException{
-        try {
-            Optional<Cars> car=repository.findById(model);
-            // String image=Base64.getEncoder().encodeToString(car.getCarImage());
-            if(car.isPresent()){
-                return car.get().getCarImage();
-            }
-            return null;
-        } catch (Exception e) {
-            throw new CustomException(e);
-        }
     }
 
     public List<Cars> getListOfCars() throws CustomException {

@@ -18,13 +18,13 @@ public class UserInfo {
     private String phoneNo;
     private String email;
     private String state;
-    String city;
+    private String city;
     private String pincode;
+
     @Override
     public String toString() {
         return "UserInfo [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", phoneNo="
                 + phoneNo + ", email=" + email + ", state=" + state + ", city=" + city + ", pincode=" + pincode + "]";
     }
-    
     
 }

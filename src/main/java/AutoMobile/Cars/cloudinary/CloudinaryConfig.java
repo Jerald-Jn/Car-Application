@@ -11,6 +11,7 @@ import com.cloudinary.Cloudinary;
 @Configuration
 public class CloudinaryConfig {
 
+    // It gives the cloudinary object for upload and destory image
     @Bean
     public Cloudinary getCloudinary(){
         Map<String,Object> map=new HashMap<>();

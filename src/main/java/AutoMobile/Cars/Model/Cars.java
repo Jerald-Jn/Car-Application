@@ -1,5 +1,6 @@
 package AutoMobile.Cars.Model;
 
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Document(collection = "Cars")
+@Document(collection = "Cars-Table-2")
 public class Cars {
     @Id
     private String model;
@@ -31,14 +32,14 @@ public class Cars {
     private String color;
     private Object carImage;
     private Object carLogo;
+    private Map<String,Object> images;
 
     @Override
     public String toString() {
         return "Cars [model=" + model + ", carId=" + carId + ", make=" + make + ", year=" + year + ", transmission="
                 + transmission + ", engineCapacity=" + engineCapacity + ", mileage=" + mileage + ", vin=" + vin
-                + ", fuelType=" + fuelType + ", price=" + price + ", color=" + color + ", carImage="
-                + carImage + ", carLogo=" + carLogo + "]";
+                + ", fuelType=" + fuelType + ", price=" + price + ", color=" + color + ", carImage=" + carImage
+                + ", carLogo=" + carLogo + ", images=" + images + "]";
     }
-    
 
 }

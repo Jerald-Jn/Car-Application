@@ -31,9 +31,7 @@ public class CartService {
 
         UUID userId = dataConverter.getCurrentUserId();
         Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
-        System.err.println("exitingCart -> " + exitingCart);
         Cart cart = exitingCart.orElseGet(() -> new Cart(userId, new HashMap<>()));
-        System.err.println("cart -> " + cart);
         Map<UUID, CartItem> items = cart.getItems();
 
         for (Entry<UUID, CartItem> key : cartRequest.getItems().entrySet()) {
@@ -106,7 +104,6 @@ public class CartService {
             if (cart.isPresent()) {
                 Map<UUID, CartItem> items = cart.get().getItems();
                 items.clear();
-                System.err.println("items -> " + cart.get().getItems());
                 cartRepository.save(cart.get());
                 if (items.isEmpty()) {
                     return "Cart cleared";
@@ -127,7 +124,6 @@ public class CartService {
                 Map<UUID, CartItem> items = cart.get().getItems();
                 if (items.get(carId) != null) {
                     items.remove(carId);
-                    System.err.println("items -> " + cart.get().getItems());
                     cartRepository.save(cart.get());
                 }else{
                     return "Item not available";
@@ -142,11 +138,8 @@ public class CartService {
     public CartResponse increaseQuantity(UUID carId) {
         UUID userId = dataConverter.getCurrentUserId();
         Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
-        System.err.println("increaseQuantity cart -> " + exitingCart);
         Cart cart = exitingCart.orElseGet(() -> new Cart(userId, new HashMap<>()));
-        System.err.println("cart -> " + cart);
         Map<UUID, CartItem> items = cart.getItems();
-        System.err.println(items.get(carId));
         if(items.containsKey(carId)){
             CartItem cartItem=items.get(carId);
             cartItem.setQuantity(cartItem.getQuantity()+1);

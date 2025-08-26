@@ -14,12 +14,10 @@ import AutoMobile.Cars.Repository.UserRepo;
 public class UserMainService {
 
     UserRepo userRepo;
-    InsuranceService insuranceService;
     BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder(8);
 
-    public UserMainService(UserRepo userRepo, InsuranceService insuranceService) {
+    public UserMainService(UserRepo userRepo) {
         this.userRepo = userRepo;
-        this.insuranceService = insuranceService;
     }
 
     public User addUser(User user, UUID uuid) {
@@ -31,22 +29,8 @@ public class UserMainService {
         }
         user.setUserId(uuid);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        // user=set(user,uuid);
         return userRepo.save(user);
     }
-
-    // public User set(User user, UUID uuid){
-    //     byte[] b = new byte[8];
-    //     new SecureRandom().nextBytes(b);
-    //     user.getCar().setCarId(Base64.getEncoder().encodeToString(b));
-    //     Car car=new Car();
-    //     car=user.getCar();
-    //     Insurance insurance = insuranceService.setInsuranceTemp(car.getInsurance());
-    //     car.setInsurance(insurance);
-    //     user.setUserId(uuid);
-    //     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-    //     return user;
-    // }
 
     public List<User> getAll() {
         return userRepo.findAll();

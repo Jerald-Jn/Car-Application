@@ -32,18 +32,20 @@ public class PaymentController {
 
     @PostMapping("/create-payment")
     public String createPayment(@RequestBody PaymentRequest paymentRequest) throws Exception { 
+        System.out.println("PaymentController.createPayment()");
         return paymentService.createPayment(paymentRequest);
     }
 
     @GetMapping("/verify-payment/{clientSecret}")
     public PaymentResponse verifyPayment(@PathVariable String clientSecret) throws Exception { 
         System.out.println("PaymentController.verifyPayment()");
-        System.err.println(clientSecret);        
+        System.out.println("PaymentController.verifyPayment()");
         return paymentService.verifyPayment(clientSecret);
     }
 
     @GetMapping()
     public Payment get(){
+        System.out.println("PaymentController.get()");
         UUID userId=dataConverter.getCurrentUserId();
         return paymentRepository.findByUserId(userId);
     }

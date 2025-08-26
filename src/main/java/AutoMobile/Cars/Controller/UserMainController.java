@@ -1,8 +1,7 @@
 package AutoMobile.Cars.Controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cloudinary.Cloudinary;
-
 import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.User;
 import AutoMobile.Cars.Security.JwtBlacklist;
-// import jakarta.servlet.http.HttpServletRequest;
 import AutoMobile.Cars.Service.UserMainService;
 
 @RestController
@@ -48,6 +44,7 @@ public class UserMainController {
 	@GetMapping()
 	public ResponseEntity<?> get() throws Exception {
 		try {
+			System.out.println("UserMainController.get()");
 			return new ResponseEntity<>(userMainService.getAll(), HttpStatus.OK);
 		} catch (RuntimeException r) {
 			throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -59,6 +56,7 @@ public class UserMainController {
 	@PostMapping("/add")
 	public ResponseEntity<User> addUser(@RequestBody User user) throws Exception {
 		try {
+			System.out.println("UserMainController.addUser()");
 			log.info("user : {}",user);
 			UUID uuid = UUID.randomUUID();
 			return new ResponseEntity<>(userMainService.addUser(user, uuid), HttpStatus.ACCEPTED);
@@ -72,6 +70,7 @@ public class UserMainController {
 	@GetMapping("/get")
 	public ResponseEntity<?> getByID(@RequestParam(required = true) String userName) throws Exception {
 		try {
+			System.out.println("UserMainController.getByID()");
 			log.info("find userName : {}",userName);
 			return new ResponseEntity<>(userMainService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {
@@ -84,6 +83,7 @@ public class UserMainController {
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> delete(@RequestParam(required = true) String userName) throws Exception {
 		try {
+			System.out.println("UserMainController.delete()");
 			log.info(" delete userName : {}", userName);
 			return new ResponseEntity<>(userMainService.delete(userName), HttpStatus.ACCEPTED);
 		} catch (RuntimeException r) {
@@ -92,21 +92,6 @@ public class UserMainController {
 			throw new CustomException("error -> " + e);
 		}
 
-	}
-
-	@Autowired
-	Cloudinary cloudinary;
-
-	@GetMapping("/alive")
-	public ResponseEntity<?> add(){
-		Map<?,?> map = new HashMap<>();
-		try {
-			map=cloudinary.api().resource("bvsllqk51c8hh2sjdlzo",null);
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
-		return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
 	}
 
 }
