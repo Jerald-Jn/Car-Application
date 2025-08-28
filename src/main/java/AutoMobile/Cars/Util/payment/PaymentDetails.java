@@ -18,4 +18,5 @@ public class PaymentDetails {
     String latest_charge;
     String status;
     String paymentMethod;
+    String receiptURL;
 }

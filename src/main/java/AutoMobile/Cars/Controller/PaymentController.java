@@ -15,8 +15,8 @@ import AutoMobile.Cars.Model.Payment;
 import AutoMobile.Cars.Repository.PaymentRepository;
 import AutoMobile.Cars.Service.PaymentService;
 import AutoMobile.Cars.Util.DataConverter;
+import AutoMobile.Cars.Util.payment.PaymentDetails;
 import AutoMobile.Cars.Util.payment.PaymentRequest;
-import AutoMobile.Cars.Util.payment.PaymentResponse;
 
 @RestController
 @RequestMapping("/payments")
@@ -36,11 +36,10 @@ public class PaymentController {
         return paymentService.createPayment(paymentRequest);
     }
 
-    @GetMapping("/verify-payment/{clientSecret}")
-    public PaymentResponse verifyPayment(@PathVariable String clientSecret) throws Exception { 
+    @GetMapping("/verify-payment/{paymentIntentId}")
+    public PaymentDetails verifyPayment(@PathVariable String paymentIntentId) throws Exception { 
         System.out.println("PaymentController.verifyPayment()");
-        System.out.println("PaymentController.verifyPayment()");
-        return paymentService.verifyPayment(clientSecret);
+        return paymentService.verifyPayment(paymentIntentId);
     }
 
     @GetMapping()

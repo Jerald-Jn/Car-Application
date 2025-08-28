@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.StripeCollection;
+import com.stripe.param.ChargeListParams;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
@@ -37,7 +40,7 @@ public class PaymentService {
         Stripe.apiKey = secretKey;
 
         UUID userId = dataConverter.getCurrentUserId();
-        long amount = Math.round(paymentRequest.getAmount());
+        long amount = Math.round(paymentRequest.getAmount()*100);
         if (amount < 200) { // RM 2 minimum for MYR
             throw new IllegalArgumentException("Amount must be at least RM 2.00");
         }
@@ -76,21 +79,36 @@ public class PaymentService {
         return paymentIntent.getClientSecret();
     }
 
-    public PaymentResponse verifyPayment(Object clientSecret) throws StripeException {
+    public PaymentDetails verifyPayment(String paymentIntentId) throws StripeException {
 
         Stripe.apiKey = secretKey;
+
+        // find userID
         UUID userId = dataConverter.getCurrentUserId();
-        Payment payment=paymentRepository.findByUserId(userId);
-        PaymentIntent paymentIntent = PaymentIntent.retrieve(payment.getPaymentDetailsMap().get(clientSecret).getId());
+        Payment payment = paymentRepository.findByUserId(userId);
+        // find payment used by paymentIntentId
+        PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
         PaymentDetails paymentDetails = payment.getPaymentDetailsMap().get(paymentIntent.getClientSecret());
         paymentDetails.setId(paymentIntent.getId());
         paymentDetails.setLatest_charge(paymentIntent.getLatestCharge());
+        // payment methos type save
         PaymentMethod method = PaymentMethod.retrieve(paymentIntent.getPaymentMethod());
         paymentDetails.setPaymentMethod(method.getType());
         paymentDetails.setStatus(paymentIntent.getStatus());
+
+        ChargeListParams params = ChargeListParams.builder()
+            .setPaymentIntent(paymentIntent.getId())
+            .build();
+
+        StripeCollection<Charge> charges = Charge.list(params);
+
+        for (Charge charge : charges.getData()) {
+            paymentDetails.setReceiptURL(charge.getReceiptUrl());
+        }
+
         payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
         paymentRepository.save(payment);
-        return dataConverter.convertToPaymentResponse(payment);
+        return dataConverter.convertToPaymentResponse(payment).getPaymentDetails().get(paymentIntent.getClientSecret());
     }
 
 }

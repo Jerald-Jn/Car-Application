@@ -116,7 +116,7 @@ public class JwtService {
             }
             return builder.toString();
         } catch (IOException e) {
-            throw new CustomRuntimeException("Unimplemented method 'getKey'");
+            throw new CustomRuntimeException("error in 'getKey' method");
         }
     }
 
@@ -125,7 +125,7 @@ public class JwtService {
             // We pass our token and Claims getSubject method referrence
             return extractClaims(token, Claims::getSubject);
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'getUsernameByToken'");
+            throw new CustomRuntimeException("error in 'getUsernameByToken' method");
         }
     }
 
@@ -137,7 +137,7 @@ public class JwtService {
             // calls the "getSubject" function used claims object.
             return claimResolver.apply(claims);
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'extractClaims'");
+            throw new CustomRuntimeException("error in 'extractClaims' method");
         }
     }
 
@@ -156,7 +156,7 @@ public class JwtService {
                     // Extracts the actual claims (i.e., payload) from the JWT.
                     .getPayload();
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'extractAllClaims'");
+            throw new CustomRuntimeException("error in 'extractAllClaims' method");
         }
     }
 
@@ -167,7 +167,7 @@ public class JwtService {
             // This check our username is equal to the userDetails and check to validity
             return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'validateToken'");
+            throw new CustomRuntimeException("error in 'validateToken' method");
         }
     }
 
@@ -176,7 +176,7 @@ public class JwtService {
             // Tests if this date is before the current date.
             return extractExpiration(token).before(new Date());
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'isTokenExpired'");
+            throw new CustomRuntimeException("error in 'isTokenExpired' method");
         }
     }
 
@@ -185,7 +185,7 @@ public class JwtService {
             // Pass the token and Claims "getExpiration" method referrence
             return extractClaims(token, Claims::getExpiration);
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'extractExpiration'");
+            throw new CustomRuntimeException("error in 'extractExpiration' method");
         }
     }
 
