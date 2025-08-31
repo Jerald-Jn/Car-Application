@@ -22,7 +22,6 @@ import AutoMobile.Cars.Repository.PaymentRepository;
 import AutoMobile.Cars.Util.DataConverter;
 import AutoMobile.Cars.Util.payment.PaymentDetails;
 import AutoMobile.Cars.Util.payment.PaymentRequest;
-import AutoMobile.Cars.Util.payment.PaymentResponse;
 
 @Service
 public class PaymentService {
@@ -38,6 +37,7 @@ public class PaymentService {
     public String createPayment(PaymentRequest paymentRequest) throws StripeException {
 
         Stripe.apiKey = secretKey;
+        System.err.println(secretKey);
 
         UUID userId = dataConverter.getCurrentUserId();
         long amount = Math.round(paymentRequest.getAmount()*100);
@@ -59,7 +59,7 @@ public class PaymentService {
             try {
                 UserInfo userInfo = paymentRequest.getUserInfo();
                 PaymentDetails paymentDetails = PaymentDetails.builder().status(paymentIntent.getStatus())
-                        .userInfo(userInfo).Id(paymentIntent.getId()).amount(paymentIntent.getAmount())
+                        .userInfo(userInfo).Id(paymentIntent.getId()).amount(paymentRequest.getAmount())
                         .paymentMethod(paymentIntent.getPaymentMethod()).build();
                 Payment existPayment = paymentRepository.findByUserId(userId);
                 if (existPayment == null || existPayment.getPaymentDetailsMap() == null

@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,9 +28,6 @@ import AutoMobile.Cars.Service.UserMainService;
 public class UserMainController {
 
 	Logger log=LoggerFactory.getLogger(UserMainController.class);
-
-	@Value("${token.file}")
-	String fileName;
 
 	UserMainService userMainService;
 	@Autowired
@@ -74,7 +70,7 @@ public class UserMainController {
 			log.info("find userName : {}",userName);
 			return new ResponseEntity<>(userMainService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {
-			throw new CustomRuntimeException(String.format("error ->" + r + "Unable to find the file : %s", fileName));
+			throw new CustomRuntimeException(String.format("error ->" + r));
 		} catch (Exception e) {
 			throw new CustomException(String.format("error -> " + e));
 		}

@@ -6,6 +6,8 @@ target/
 
 # Ignore Spring Boot resources properties
 src/main/resources/*
+!src/main/resources/application.properties
+
 
 ### STS ###
 .apt_generated
@@ -37,4 +39,5 @@ build/
 
 # Ignore environment files
 .env
-*.env
+.*env/
+.env/*

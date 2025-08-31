@@ -38,7 +38,7 @@ public class UserService {
                 return "Invalid credentials";
             }
         } catch (Exception e) {
-            throw new CustomRuntimeException("Unimplemented method 'login' -> " + e.getMessage());
+            throw new CustomRuntimeException("error in 'login' method -> " + e.getMessage());
         }
     }
 
