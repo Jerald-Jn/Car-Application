@@ -20,7 +20,7 @@ import AutoMobile.Cars.Util.payment.PaymentRequest;
 
 @RestController
 @RequestMapping("/payments")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class PaymentController {
 
     @Autowired

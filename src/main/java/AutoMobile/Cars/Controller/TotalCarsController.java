@@ -23,7 +23,7 @@ import AutoMobile.Cars.Util.car.CarResponse;
 
 @Controller
 @RequestMapping("/cars")
-@CrossOrigin
+@CrossOrigin("*")
 public class TotalCarsController {
 
     @Autowired
