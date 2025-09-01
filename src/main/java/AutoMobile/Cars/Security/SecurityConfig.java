@@ -114,7 +114,7 @@ public class SecurityConfig {
         // development) are allowed.
         // You could use "*" for all origins, but it's not allowed when allowCredentials
         // is true.
-        config.setAllowedOrigins(List.of("http://localhost:5173","https://benevolent-cassata-8c8a31.netlify.app"));
+        config.setAllowedOrigins(List.of("http://localhost:5173","*"));
         config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         // config.setExposedHeaders(List.of("Authorization", "Content-Type")); //
