@@ -24,7 +24,7 @@ import AutoMobile.Cars.Service.UserMainService;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class UserMainController {
 
 	Logger log=LoggerFactory.getLogger(UserMainController.class);
