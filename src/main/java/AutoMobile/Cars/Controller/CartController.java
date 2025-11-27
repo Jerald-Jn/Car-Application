@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +64,7 @@ public class CartController {
         return ResponseEntity.ok().body(cartResponse);
     }
 
-    @GetMapping()
+    @GetMapping("")
     public ResponseEntity<?> getCart(){
         CartResponse cartResponse=null;
         try {
@@ -73,19 +72,6 @@ public class CartController {
             cartResponse=cartService.getCart();
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
-        }
-        return ResponseEntity.ok().body(cartResponse);
-    }
-
-
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllCart(){
-        List<CartResponse> cartResponse=null;
-        try {
-            System.out.println("CartController.getAllCart()");
-            cartResponse=cartService.getAllCart();
-        } catch (Exception e) {
-            throw new CustomRuntimeException("get cart error");
         }
         return ResponseEntity.ok().body(cartResponse);
     }

@@ -1,6 +1,8 @@
 package AutoMobile.Cars.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,14 +23,19 @@ public class UserMainService {
     }
 
     public User addUser(User user, UUID uuid) {
-        List<User> check=getAll();
-        for(int i=0;i<check.size();i++){
-            if(check.get(i).getUserName().equals(user.getUserName())){
+        List<User> users=getAll();
+        for(int i=0;i<users.size();i++){
+            if(users.get(i).getUserName().equals(user.getUserName())){
                 throw new CustomRuntimeException("User's alrady stored");
             }
         }
         user.setUserId(uuid);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Set roles =new HashSet<String>();
+        if(user.getRoles() == null || user.getRoles().isEmpty()){
+            roles.add("ROLE_USER");
+            user.setRoles(roles);
+        }
         return userRepo.save(user);
     }
 
@@ -37,7 +44,9 @@ public class UserMainService {
     }
 
     public User getByID(String userName) {
-        return userRepo.findById(userName).get();
+        User user= userRepo.findById(userName).get();
+        System.err.println("user.getRoles()"+user.getRoles());
+        return user;
     }
 
     public User delete(String userName) {

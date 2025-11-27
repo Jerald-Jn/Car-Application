@@ -43,13 +43,4 @@ public class CloudinaryService {
             throw new CustomException(e);
         }
     }
-
-    public Object getImage() {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

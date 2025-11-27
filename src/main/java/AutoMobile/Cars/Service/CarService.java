@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class TotalCarService {
+public class CarService {
 
     CarsRepository repository;
     CarResponse response;

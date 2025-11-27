@@ -1,8 +1,8 @@
 package AutoMobile.Cars.Auth;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import AutoMobile.Cars.Model.User;
@@ -23,7 +23,9 @@ public class UserDetailsTemp implements UserDetails {
      */  
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return user.getRoles().stream()
+            .map(role -> new SimpleGrantedAuthority(role))
+            .toList();
     }
 
     @Override

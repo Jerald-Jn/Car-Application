@@ -14,7 +14,7 @@ import AutoMobile.Cars.Repository.UserRepo;
 import AutoMobile.Cars.Security.JwtBlacklist;
 
 @RestController
-@CrossOrigin()
+@CrossOrigin(origins = "*")
 public class UserController {
 
     UserService service;
@@ -38,7 +38,4 @@ public class UserController {
         }
         
     }
-
-    
-    
 }

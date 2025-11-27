@@ -16,9 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import AutoMobile.Cars.Auth.JwtFilter;
 import AutoMobile.Cars.Auth.PrincpleUser;
@@ -46,19 +44,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         security
                 // <-- This must be enabled the Custom CROSS-ORIGIN-RESOURCE-SHARING
-                .cors(c -> c.configurationSource(configurationSource))
+                // .cors(c -> c.configurationSource(configurationSource))
                 // This used to we don't need login and logout
                 .csrf(c -> c.disable())
                 // It allow the API without login
                 .authorizeHttpRequests(req -> req.requestMatchers(
                         "/swagger-ui/**",
-                        "/user/**",
                         "/v3/api-docs/**",
                         "/swagger-ui.html",
-                        "/user",
-                        "/user/add",
                         "/login",
                         "/cars/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/payment/**","/cart/**","/user/**").hasAnyRole("ADMIN","USER")
                         // It is used to enable authentication and we acces the api using login or token
                         .anyRequest().authenticated())
                 // It enable "OpenSource" login like google and github account
@@ -72,11 +69,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 // It allow logout using this 'logout' Api
                 .logout(
-                    l->l.logoutUrl("/logout")
-                    .logoutSuccessHandler((req, res, auth) ->
-                            res.setStatus(HttpServletResponse.SC_OK))
-                            .addLogoutHandler(customLogout)
-                );
+                        l -> l.logoutUrl("/logout")
+                                .logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpServletResponse.SC_OK))
+                                .addLogoutHandler(customLogout));
         return security.build();
     }
 
@@ -104,26 +99,4 @@ public class SecurityConfig {
             throw new CustomException(e);
         }
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        // This object allows you to define which origins, methods, headers, etc., are
-        // allowed to access the backend.
-        CorsConfiguration config = new CorsConfiguration();
-        // only requests from http://localhost:5173 (likely your frontend in
-        // development) are allowed.
-        // You could use "*" for all origins, but it's not allowed when allowCredentials
-        // is true.
-        config.setAllowedOrigins(List.of("http://localhost:5173","*"));
-        config.setAllowedMethods(List.of("*"));
-        config.setAllowedHeaders(List.of("*"));
-        // config.setExposedHeaders(List.of("Authorization", "Content-Type")); //
-        // Optional but safe
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
-
 }

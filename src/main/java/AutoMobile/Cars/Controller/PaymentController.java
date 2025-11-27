@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Model.Payment;
 import AutoMobile.Cars.Repository.PaymentRepository;
 import AutoMobile.Cars.Service.PaymentService;
@@ -42,10 +43,14 @@ public class PaymentController {
         return paymentService.verifyPayment(paymentIntentId);
     }
 
-    @GetMapping()
-    public Payment get(){
+    @GetMapping("")
+    public Payment get() throws CustomException{
         System.out.println("PaymentController.get()");
-        UUID userId=dataConverter.getCurrentUserId();
+        try {
+            UUID userId=dataConverter.getCurrentUserId();
         return paymentRepository.findByUserId(userId);
+        } catch (Exception e) {
+            throw new CustomException("getPayemt", e);
+        }
     }
 }

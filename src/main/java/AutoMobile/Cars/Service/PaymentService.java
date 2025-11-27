@@ -1,5 +1,6 @@
 package AutoMobile.Cars.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,10 @@ public class PaymentService {
         payment.getPaymentDetailsMap().put(paymentIntent.getClientSecret(), paymentDetails);
         paymentRepository.save(payment);
         return dataConverter.convertToPaymentResponse(payment).getPaymentDetails().get(paymentIntent.getClientSecret());
+    }
+
+    public List<Payment> getAllPayment() {
+        return paymentRepository.findAll();
     }
 
 }

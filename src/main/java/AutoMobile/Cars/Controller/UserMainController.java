@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,18 +36,6 @@ public class UserMainController {
 		this.userMainService = userMainService;
 	}
 
-	@GetMapping()
-	public ResponseEntity<?> get() throws Exception {
-		try {
-			System.out.println("UserMainController.get()");
-			return new ResponseEntity<>(userMainService.getAll(), HttpStatus.OK);
-		} catch (RuntimeException r) {
-			throw new CustomRuntimeException("Runtime Error -> " + r);
-		} catch (Exception e) {
-			throw new CustomException("error -> " + e);
-		}
-	}
-
 	@PostMapping("/add")
 	public ResponseEntity<User> addUser(@RequestBody User user) throws Exception {
 		try {
@@ -64,7 +51,7 @@ public class UserMainController {
 	}
 
 	@GetMapping("/get")
-	public ResponseEntity<?> getByID(@RequestParam(required = true) String userName) throws Exception {
+	public ResponseEntity<?> getByUserName(@RequestParam(required = true) String userName) throws Exception {
 		try {
 			System.out.println("UserMainController.getByID()");
 			log.info("find userName : {}",userName);
@@ -74,20 +61,6 @@ public class UserMainController {
 		} catch (Exception e) {
 			throw new CustomException(String.format("error -> " + e));
 		}
-	}
-
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> delete(@RequestParam(required = true) String userName) throws Exception {
-		try {
-			System.out.println("UserMainController.delete()");
-			log.info(" delete userName : {}", userName);
-			return new ResponseEntity<>(userMainService.delete(userName), HttpStatus.ACCEPTED);
-		} catch (RuntimeException r) {
-			throw new CustomRuntimeException("Runtime Error -> " + r);
-		} catch (Exception e) {
-			throw new CustomException("error -> " + e);
-		}
-
 	}
 
 }
