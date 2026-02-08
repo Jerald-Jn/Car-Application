@@ -54,9 +54,10 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/login",
                         "/user/add",
+                        "/payments/**","/cart/**","/user/**",
                         "/cars/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/payment/**","/cart/**","/user/**").hasAnyRole("ADMIN","USER")
+                        // .requestMatchers("/payments/**","/cart/**","/user/**").hasAnyRole("ADMIN","USER")
                         // It is used to enable authentication and we acces the api using login or token
                         .anyRequest().authenticated())
                 // It enable "OpenSource" login like google and github account
