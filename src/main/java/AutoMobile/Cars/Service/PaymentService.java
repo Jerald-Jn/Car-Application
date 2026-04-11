@@ -3,7 +3,6 @@ package AutoMobile.Cars.Service;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +29,13 @@ public class PaymentService {
     @Value("${stripe.secretKey}")
     private String secretKey;
 
-    @Autowired
     DataConverter dataConverter;
-    @Autowired
     PaymentRepository paymentRepository;
+
+    public PaymentService(DataConverter dataConverter, PaymentRepository paymentRepository) {
+        this.dataConverter = dataConverter;
+        this.paymentRepository = paymentRepository;
+    }
 
     public String createPayment(PaymentRequest paymentRequest) throws StripeException {
 

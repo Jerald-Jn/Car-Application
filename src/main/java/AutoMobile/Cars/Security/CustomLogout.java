@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
@@ -8,16 +7,21 @@ import org.springframework.stereotype.Component;
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class CustomLogout implements LogoutHandler {
 
-    @Autowired
     JwtBlacklist jwtBlacklist;
+
+    public CustomLogout(JwtBlacklist jwtBlacklist) {
+        this.jwtBlacklist = jwtBlacklist;
+    }
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-    System.out.println("CustomLogout.logout()");
+    log.info("request : {}, response : {}, authentication : {}",request,response,authentication);
         try {
             final String token = request.getHeader("Authorization");
             boolean chceklogout = false;
@@ -34,9 +38,9 @@ public class CustomLogout implements LogoutHandler {
             return;
         }
         if (authentication != null && authentication.getName() != null) {
-            System.out.println("User logged out: " + authentication.getName());
+            log.info("User logged out: {}" + authentication.getName());
         } else {
-            System.out.println("Anonymous logout attempt"+authentication);
+            log.info("Anonymous logout attempt : {}"+authentication);
         }
         }
          catch (Exception e) {

@@ -1,6 +1,6 @@
 package AutoMobile.Cars.Auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,20 +14,23 @@ import AutoMobile.Cars.Repository.UserRepo;
 @Component
 public class PrincpleUser implements UserDetailsService {
 
-    @Autowired
     UserRepo userRepo;
 
+    public PrincpleUser(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         try {
             // Find User from username
-            User user = userRepo.findById(username).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+            User user = userRepo.findById(username).orElseThrow(() -> new UsernameNotFoundException("User not found - " + username));
             if(user!=null){
                 return new UserDetailsTemp(user); 
             }
             return null;
         } catch (Exception e) {
-            throw new CustomRuntimeException("Get exception 'loadUserByUsername'"+e.getMessage());
+            throw new CustomRuntimeException(e.getMessage());
         }
             
     }

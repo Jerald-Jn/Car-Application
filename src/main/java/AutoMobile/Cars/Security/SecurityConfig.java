@@ -1,8 +1,6 @@
 package AutoMobile.Cars.Security;
 
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,15 +27,15 @@ public class SecurityConfig {
 
     JwtFilter jwtFilter;
     PrincpleUser princpleUser;
-
-    @Autowired
     CorsConfigurationSource configurationSource;
-    @Autowired
     CustomLogout customLogout;
 
-    public SecurityConfig(JwtFilter jwtFilter, PrincpleUser princpleUser) {
+    public SecurityConfig(JwtFilter jwtFilter, PrincpleUser princpleUser, CorsConfigurationSource configurationSource,
+            CustomLogout customLogout) {
         this.jwtFilter = jwtFilter;
         this.princpleUser = princpleUser;
+        this.configurationSource = configurationSource;
+        this.customLogout = customLogout;
     }
 
     @Bean

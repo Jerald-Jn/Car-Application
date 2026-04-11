@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
@@ -22,10 +21,13 @@ import AutoMobile.Cars.Util.cart.CartResponse;
 @Service
 public class CartService {
 
-    @Autowired
     CartRepository cartRepository;
-    @Autowired
     DataConverter dataConverter;
+
+    public CartService(CartRepository cartRepository, DataConverter dataConverter) {
+        this.cartRepository = cartRepository;
+        this.dataConverter = dataConverter;
+    }
 
     public CartResponse createCart(CartRequest cartRequest) {
 
@@ -140,7 +142,7 @@ public class CartService {
         Optional<Cart> exitingCart = cartRepository.findByUserId(userId);
         Cart cart = exitingCart.orElseGet(() -> new Cart(userId, new HashMap<>()));
         Map<UUID, CartItem> items = cart.getItems();
-        if(items.containsKey(carId)){
+        if (items.containsKey(carId)) {
             CartItem cartItem=items.get(carId);
             cartItem.setQuantity(cartItem.getQuantity()+1);
             cart=cartRepository.save(cart);

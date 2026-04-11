@@ -1,6 +1,5 @@
 package AutoMobile.Cars.Auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +13,6 @@ public class UserService {
     AuthenticationManager authenticationManager;
     JwtService jwtService;
 
-    @Autowired
     UserService(AuthenticationManager authenticationManager, JwtService jwtService){
         this.authenticationManager=authenticationManager;
         this.jwtService=jwtService;
@@ -38,7 +36,7 @@ public class UserService {
                 return "Invalid credentials";
             }
         } catch (Exception e) {
-            throw new CustomRuntimeException("error in 'login' method -> " + e.getMessage());
+            throw new CustomRuntimeException(e.getMessage());
         }
     }
 

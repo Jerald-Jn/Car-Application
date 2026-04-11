@@ -2,7 +2,6 @@ package AutoMobile.Cars.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,34 +17,40 @@ import AutoMobile.Cars.Service.PaymentService;
 import AutoMobile.Cars.Util.DataConverter;
 import AutoMobile.Cars.Util.payment.PaymentDetails;
 import AutoMobile.Cars.Util.payment.PaymentRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/payments")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class PaymentController {
 
-    @Autowired
     PaymentService paymentService;
-    @Autowired
     PaymentRepository paymentRepository;
-    @Autowired
     DataConverter dataConverter;
+
+    public PaymentController(PaymentService paymentService, PaymentRepository paymentRepository,
+            DataConverter dataConverter) {
+        this.paymentService = paymentService;
+        this.paymentRepository = paymentRepository;
+        this.dataConverter = dataConverter;
+    }
 
     @PostMapping("/create-payment")
     public String createPayment(@RequestBody PaymentRequest paymentRequest) throws Exception { 
-        System.out.println("PaymentController.createPayment()");
+        log.info("paymentRequest : {}",paymentRequest);
         return paymentService.createPayment(paymentRequest);
     }
 
     @GetMapping("/verify-payment/{paymentIntentId}")
     public PaymentDetails verifyPayment(@PathVariable String paymentIntentId) throws Exception { 
-        System.out.println("PaymentController.verifyPayment()");
+        log.info("paymentIntentId : {}",paymentIntentId);
         return paymentService.verifyPayment(paymentIntentId);
     }
 
     @GetMapping("")
     public Payment get() throws CustomException{
-        System.out.println("PaymentController.get()");
+        log.info("getPayment");
         try {
             UUID userId=dataConverter.getCurrentUserId();
         return paymentRepository.findByUserId(userId);

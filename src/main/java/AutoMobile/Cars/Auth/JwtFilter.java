@@ -2,8 +2,8 @@ package AutoMobile.Cars.Auth;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,17 +20,20 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
     JwtService jwtService;
-    @Autowired
     ApplicationContext applicationContext;
-    @Autowired
     JwtBlacklist jwtBlacklist;
 
+    public JwtFilter(JwtService jwtService, ApplicationContext applicationContext, JwtBlacklist jwtBlacklist) {
+        this.jwtService = jwtService;
+        this.applicationContext = applicationContext;
+        this.jwtBlacklist = jwtBlacklist;
+    }
+
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        // Getheader "Authorization" value from the request
         String token = request.getHeader("Authorization");
         String userName = null;
         

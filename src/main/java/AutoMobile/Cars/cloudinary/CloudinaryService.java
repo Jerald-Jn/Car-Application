@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +16,11 @@ import AutoMobile.Cars.Model.Cars;
 @Service
 public class CloudinaryService {
 
-    @Autowired
     Cloudinary cloudinary;
+
+    public CloudinaryService(Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
+    }
 
     @SuppressWarnings("unchecked")
     public Object uploadImage(Cars car,List<MultipartFile> images, MultipartFile carImage,MultipartFile carLogo) throws CustomException, IOException {

@@ -2,7 +2,6 @@ package AutoMobile.Cars.Controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,22 +16,25 @@ import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Service.CartService;
 import AutoMobile.Cars.Util.cart.CartRequest;
 import AutoMobile.Cars.Util.cart.CartResponse;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cart")
 @CrossOrigin
-@AllArgsConstructor
+@Slf4j
 public class CartController {
 
-    @Autowired
     CartService cartService;
+
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
     
     @PostMapping("/create")
     public ResponseEntity<?> createCart(@RequestBody CartRequest cartRequest){
         CartResponse cartResponse=null;
         try {
-            System.out.println("CartController.createCart()");
+            log.info("cartRequest : {}",cartRequest);
             cartResponse=cartService.createCart(cartRequest);
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
@@ -42,7 +44,7 @@ public class CartController {
 
     @GetMapping("/increase/{carId}")
     public ResponseEntity<?> increaseQuantity(@PathVariable UUID carId){
-        System.out.println("CartController.increaseQuantity()");
+        log.info("carId : {}",carId);
         CartResponse cartResponse=null;
         try {
             cartResponse=cartService.increaseQuantity(carId);
@@ -54,7 +56,7 @@ public class CartController {
 
     @DeleteMapping("/remove/{carId}")
     public ResponseEntity<?> removeCart(@PathVariable UUID carId){
-        System.out.println("CartController.removeCart()");
+        log.info("carId : {}",carId);
         CartResponse cartResponse=null;
         try {
             cartResponse=cartService.removeCart(carId);
@@ -68,7 +70,7 @@ public class CartController {
     public ResponseEntity<?> getCart(){
         CartResponse cartResponse=null;
         try {
-            System.out.println("CartController.getCart()");
+            log.info("getCart()");
             cartResponse=cartService.getCart();
         } catch (Exception e) {
             throw new CustomRuntimeException("create cart error");
@@ -78,13 +80,13 @@ public class CartController {
 
     @DeleteMapping("/clear-cart")
     public String clearCart(){
-        System.out.println("CartController.clearCart()");
+        log.info("clearCart()");
         return cartService.clearCart();
     }
 
     @DeleteMapping("/delete/{carId}")
     public ResponseEntity<?> clearSpecficItem(@PathVariable UUID carId){
-        System.out.println("CartController.removeCart()");
+        log.info("carId : {}",carId);
         String cartResponse=null;
         try {
             cartResponse=cartService.clearSpecficItem(carId);

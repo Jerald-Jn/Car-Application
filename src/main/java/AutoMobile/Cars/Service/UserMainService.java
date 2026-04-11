@@ -31,7 +31,7 @@ public class UserMainService {
         }
         user.setUserId(uuid);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Set roles =new HashSet<String>();
+        Set<String> roles =new HashSet<String>();
         if(user.getRoles() == null || user.getRoles().isEmpty()){
             roles.add("ROLE_USER");
             user.setRoles(roles);

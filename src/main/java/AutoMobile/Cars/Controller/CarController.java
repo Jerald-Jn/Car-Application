@@ -2,7 +2,6 @@ package AutoMobile.Cars.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,19 +14,24 @@ import AutoMobile.Cars.Excrptionfold.CustomException;
 import AutoMobile.Cars.Model.Cars;
 import AutoMobile.Cars.Service.CarService;
 import AutoMobile.Cars.Util.car.CarResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/cars")
 @CrossOrigin("*")
+@Slf4j
 public class CarController {
 
-    @Autowired
     CarService service;
+        
+    public CarController(CarService service) {
+        this.service = service;
+    }
 
     @GetMapping("/get/{value}")
     public ResponseEntity<?> get(@PathVariable String value) throws CustomException {
         try {
-            System.out.println("TotalCarsController.get()");
+            log.info("value : {}",value);
             List<CarResponse> response = service.getCar(value);
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } catch (CustomException e) {
@@ -38,7 +42,7 @@ public class CarController {
     @GetMapping("")
     public ResponseEntity<?> getListOfCars() throws CustomException {
         try {
-            System.out.println("TotalCarsController.getListOfCars()");
+            log.info("getListOfCars");
             List<Cars> totalCars = service.getListOfCars();
             if (totalCars != null) {
                 return ResponseEntity.ok().body(totalCars);

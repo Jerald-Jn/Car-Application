@@ -2,9 +2,6 @@ package AutoMobile.Cars.Controller;
 
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,26 +17,25 @@ import AutoMobile.Cars.Excrptionfold.CustomRuntimeException;
 import AutoMobile.Cars.Model.User;
 import AutoMobile.Cars.Security.JwtBlacklist;
 import AutoMobile.Cars.Service.UserMainService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class UserMainController {
 
-	Logger log=LoggerFactory.getLogger(UserMainController.class);
-
 	UserMainService userMainService;
-	@Autowired
     JwtBlacklist jwtBlacklist;
 
-	public UserMainController(UserMainService userMainService) {
+	public UserMainController(UserMainService userMainService, JwtBlacklist jwtBlacklist) {
 		this.userMainService = userMainService;
+		this.jwtBlacklist = jwtBlacklist;
 	}
 
 	@PostMapping("/add")
 	public ResponseEntity<User> addUser(@RequestBody User user) throws Exception {
 		try {
-			System.out.println("UserMainController.addUser()");
 			log.info("user : {}",user);
 			UUID uuid = UUID.randomUUID();
 			return new ResponseEntity<>(userMainService.addUser(user, uuid), HttpStatus.ACCEPTED);
@@ -53,7 +49,6 @@ public class UserMainController {
 	@GetMapping("/get")
 	public ResponseEntity<?> getByUserName(@RequestParam(required = true) String userName) throws Exception {
 		try {
-			System.out.println("UserMainController.getByID()");
 			log.info("find userName : {}",userName);
 			return new ResponseEntity<>(userMainService.getByID(userName), HttpStatus.OK);
 		} catch (RuntimeException r) {

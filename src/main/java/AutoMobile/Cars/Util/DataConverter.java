@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,9 +27,12 @@ import AutoMobile.Cars.Util.payment.PaymentResponse;
 @Component
 public class DataConverter {
 
-    @Autowired
     UserRepo userRepo;
     
+    public DataConverter(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
     public static CarResponse carToCarResponse(Cars carEntity){
         List<Object> imagesList=new ArrayList<>();
         for (Map.Entry<String,Object> images: carEntity.getImages().entrySet()) {

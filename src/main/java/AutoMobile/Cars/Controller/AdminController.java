@@ -2,9 +2,6 @@ package AutoMobile.Cars.Controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,27 +22,31 @@ import AutoMobile.Cars.Service.CartService;
 import AutoMobile.Cars.Service.PaymentService;
 import AutoMobile.Cars.Service.UserMainService;
 import AutoMobile.Cars.Util.cart.CartResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin( origins = "*")
+@Slf4j
 public class AdminController {
 
-    @Autowired
     UserMainService userMainService;
-    @Autowired
     CarService carService;
-    @Autowired
     CartService cartService;
-    @Autowired
     PaymentService paymentService;
 
-    Logger log = LoggerFactory.getLogger(AdminController.class);
+    public AdminController(UserMainService userMainService, CarService carService, CartService cartService,
+            PaymentService paymentService) {
+        this.userMainService = userMainService;
+        this.carService = carService;
+        this.cartService = cartService;
+        this.paymentService = paymentService;
+    }
 
     @GetMapping("/all/users")
     public ResponseEntity<?> get() throws Exception {
         try {
-            System.out.println("UserMainController.get()");
+            log.info(" get users");
             return new ResponseEntity<>(userMainService.getAll(), HttpStatus.OK);
         } catch (RuntimeException r) {
             throw new CustomRuntimeException("Runtime Error -> " + r);
@@ -57,7 +58,6 @@ public class AdminController {
     @DeleteMapping("/delete/user")
     public ResponseEntity<?> delete(@RequestParam(required = true) String userName) throws Exception {
         try {
-            System.out.println("UserMainController.delete()");
             log.info(" delete userName : {}", userName);
             return new ResponseEntity<>(userMainService.delete(userName), HttpStatus.ACCEPTED);
         } catch (RuntimeException r) {
@@ -74,7 +74,7 @@ public class AdminController {
             @RequestPart("banner") MultipartFile carImage, @RequestPart("logo") MultipartFile carLogo)
             throws CustomException {
         try {
-            System.out.println("TotalCarsController.get()");
+            log.info("jsonStringcar : {}, images : {},  carImage : {}, carLogo : {}",jsonStringcar, images, carImage, carLogo);
             return new ResponseEntity<>(carService.addCar(jsonStringcar, images, carImage, carLogo),
                     HttpStatus.ACCEPTED);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AdminController {
     public ResponseEntity<?> getAllCart() {
         List<CartResponse> cartResponse = null;
         try {
-            System.out.println("CartController.getAllCart()");
+            log.info("getAllCart()");
             cartResponse = cartService.getAllCart();
         } catch (Exception e) {
             throw new CustomRuntimeException("get cart error");
@@ -97,6 +97,7 @@ public class AdminController {
     @GetMapping("/all/payments")
     public ResponseEntity<?> getAllPayment() throws CustomException{
         try {
+            log.info("getAllPayment()");
             List<Payment> payment = paymentService.getAllPayment();
             return new ResponseEntity<>(payment, HttpStatus.ACCEPTED);
         } catch (Exception e) {

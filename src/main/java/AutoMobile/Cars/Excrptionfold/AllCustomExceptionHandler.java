@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class AllCustomExceptionHandler {
@@ -19,16 +18,16 @@ public class AllCustomExceptionHandler {
     List<String> errorList = new ArrayList<>();
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> CustomExceptionHandler(Exception e, WebRequest request) {
+    public ResponseEntity<?> CustomExceptionHandler(Exception e) {
         errorList.add(e.getMessage());
         log.info("CustomException -> :{} ", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
-    public ResponseEntity<?> CustomRumtimeExceptionHandler(Exception e, WebRequest request) {
+    public ResponseEntity<?> CustomRumtimeExceptionHandler(CustomRuntimeException e) {
         errorList.add(e.getMessage());
         log.info("CustomRuntimeException -> :{} ", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(403));
     }
 }
